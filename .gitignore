@@ -1,0 +1,8 @@
+Informe.pdf
+*.o
+myshellin
+*.log
+*.toc
+*.gz
+*.aux
+*.out
