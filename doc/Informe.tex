@@ -1,0 +1,72 @@
+\title{Proyecto Semestral}
+\author{}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc} %\ This allows spanish tildes
+\usepackage[spanish]{babel}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{titling}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,a4paper]{geometry}
+\usepackage{amsmath}
+
+\usepackage{listings}
+\lstset{
+	basicstyle=\small\ttfamily,
+	columns=flexible,
+	breaklines=true,
+	inputencoding=utf8,
+	extendedchars=true,
+	literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1
+}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,allcolors=black,pdftitle={Proyecto Semestral}}
+\usepackage{hypcap}
+
+\pretitle{%
+	\begin{center}
+		\LARGE
+		\includegraphics[width=4cm]{ubblogo.png}\\[\bigskipamount]
+		\Large
+		\textbf{Sistemas Operativos}\\[\smallskipamount]
+	}
+
+\posttitle{\end{center}}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+\clearpage\maketitle
+\thispagestyle{empty}
+
+\begin{flushright}
+\textbf{Integrantes:}\\
+Christopher Cromer\\
+Raúl Hernandez
+\end{flushright}
+
+\begin{flushright}
+\textbf{Profesor:}\\
+Carlos Faúndez
+\end{flushright}
+
+\newpage
+
+\clearpage
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage
+\hypersetup{pageanchor=true}
+\pagenumbering{arabic}
+
+\newpage
+\section{Introducción}
+
+\newpage
+\section{Conclusiones}
+
+\end{document}
+
