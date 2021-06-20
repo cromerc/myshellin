@@ -21,12 +21,20 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/**
+ * Get the logged in user's username.
+ * @return Returns the logged in user's username.
+ */
 char *get_user() {
     struct passwd *pass;
     pass = getpwuid(getuid());
     return pass->pw_name;
 }
 
+/**
+ * Get the current working directory of the shell.
+ * @return Returns the current working directory.
+ */
 char *get_working_directory() {
     char *cwd = NULL;
     cwd = getcwd(NULL, PATH_MAX);
@@ -39,6 +47,9 @@ char *get_working_directory() {
     }
 }
 
+/**
+ * Print the console line before the user input.
+ */
 void print_input_line() {
     char *name = get_user();
     char *cwd = get_working_directory();

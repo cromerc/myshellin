@@ -16,6 +16,11 @@
 #include <stdlib.h>
 #include "loop.h"
 
+/**
+ * The main entry point to the program.
+ * @param argc The number of arguments passed.
+ * @return Returns 0 on success or an error code on failure.
+ */
 int main(int argc, char **argv) {
     loop();
     return EXIT_SUCCESS;

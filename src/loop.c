@@ -19,10 +19,17 @@
 #include <string.h>
 #include "console_line.h"
 
+/**
+ * Remove new line from the end of a string.
+ * @param line The string to remove the new line from.
+ */
 void remove_new_line(char* line) {
     line[strcspn(line, "\n")] = 0;
 }
 
+/**
+ * This is the loop that checks for user input and acts on it.
+ */
 void loop() {
     size_t buffer_size = 0;
     char *line = NULL;
