@@ -13,10 +13,47 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <stdlib.h>
-#include "loop.h"
+#include <string.h>
+#include "console_line.h"
 
-int main(int argc, char **argv) {
-    loop();
-    return EXIT_SUCCESS;
+void remove_new_line(char* line) {
+    line[strcspn(line, "\n")] = 0;
+}
+
+void loop() {
+    size_t buffer_size = 0;
+    char *line = NULL;
+
+    while (1) {
+        print_input_line();
+        if (getline(&line, &buffer_size, stdin) == -1) {
+            if (feof(stdin)) {
+                // the stdin was closed, this usually happens for CTRL-D
+                printf("\n");
+                if (line != NULL) {
+                    free(line);
+                }
+                break;
+            }
+            else  {
+                perror("getline() error: ");
+                if (line != NULL) {
+                    free(line);
+                }
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        remove_new_line(line);
+
+        if (strcmp(line, "quit") == 0) {
+            if (line != NULL) {
+                free(line);
+            }
+            break;
+        }
+    }
 }

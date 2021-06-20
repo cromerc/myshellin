@@ -1,13 +1,14 @@
 CC=clang
-CFLAGS=-Wall -Isrc/include -DDEBUG -g
-LDFLAGS=-lm
-SRC=src/myshellin.c
+CFLAGS=-Wall -Isrc/include -DDEBUG -g -std=c17
+LDFLAGS=
+FILENAME=myshellin
+SRC=src/myshellin.c src/loop.c src/console_line.c
 OBJ=$(SRC:.c=.o)
 
-all: myshellin informe
+all: myshellin
 
 myshellin: $(OBJ)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(FILENAME) $^ $(LDFLAGS)
 
 informe:
 # if pdflatex is installed create the informe
@@ -16,10 +17,10 @@ ifneq (, $(shell which pdflatex))
 	mv doc/Informe.pdf Informe.pdf
 endif
 
-clean: cleanmyshellin cleaninforme
+clean: cleanmyshellin
 
 cleanmyshellin:
-	rm -f src/*.o myshellin
+	rm -f src/*.o $(FILENAME)
 
 cleaninforme:
 	make -C doc clean
