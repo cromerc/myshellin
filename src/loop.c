@@ -40,6 +40,7 @@ void loop() {
             if (feof(stdin)) {
                 // the stdin was closed, this usually happens for CTRL-D
                 printf("\n");
+                free(line);
                 break;
             }
             else  {
@@ -52,6 +53,7 @@ void loop() {
         remove_new_line(line);
 
         if (strcmp(line, "quit") == 0) {
+            free(line);
             break;
         }
     }
