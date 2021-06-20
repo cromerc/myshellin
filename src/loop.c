@@ -15,19 +15,36 @@
 
 #define _GNU_SOURCE
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include "user.h"
 
 void remove_new_line(char* line) {
     line[strcspn(line, "\n")] = 0;
 }
 
+char *get_working_directory() {
+    char *cwd = NULL;
+    cwd = getcwd(NULL, PATH_MAX);
+    if (cwd != NULL) {
+        return cwd;
+    }
+    else {
+        perror("getcwd() error: ");
+        exit(EXIT_FAILURE);
+    }
+}
+
 void print_input_line() {
     char *name = get_user();
-    printf("%s $ ", name);
+    char *cwd = get_working_directory();
+    printf("%s:%s $ ", name, cwd);
+    free(name);
+    free(cwd);
 }
 
 void loop() {
@@ -44,8 +61,7 @@ void loop() {
                 break;
             }
             else  {
-                perror("Error: ");
-                printf("\n");
+                perror("getline() error: ");
                 if (line != NULL) {
                     free(line);
                 }
