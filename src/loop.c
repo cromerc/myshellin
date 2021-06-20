@@ -14,37 +14,13 @@
  */
 
 #define _GNU_SOURCE
-#include <errno.h>
-#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include "user.h"
+#include "console_line.h"
 
 void remove_new_line(char* line) {
     line[strcspn(line, "\n")] = 0;
-}
-
-char *get_working_directory() {
-    char *cwd = NULL;
-    cwd = getcwd(NULL, PATH_MAX);
-    if (cwd != NULL) {
-        return cwd;
-    }
-    else {
-        perror("getcwd() error: ");
-        exit(EXIT_FAILURE);
-    }
-}
-
-void print_input_line() {
-    char *name = get_user();
-    char *cwd = get_working_directory();
-    printf("%s:%s $ ", name, cwd);
-    free(name);
-    free(cwd);
 }
 
 void loop() {
@@ -57,7 +33,9 @@ void loop() {
             if (feof(stdin)) {
                 // the stdin was closed, this usually happens for CTRL-D
                 printf("\n");
-                free(line);
+                if (line != NULL) {
+                    free(line);
+                }
                 break;
             }
             else  {
@@ -72,7 +50,9 @@ void loop() {
         remove_new_line(line);
 
         if (strcmp(line, "quit") == 0) {
-            free(line);
+            if (line != NULL) {
+                free(line);
+            }
             break;
         }
     }
