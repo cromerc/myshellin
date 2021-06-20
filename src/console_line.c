@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "color.h"
 
 /**
  * Get the logged in user's username.
@@ -53,7 +54,7 @@ char *get_working_directory() {
 void print_input_line() {
     char *name = get_user();
     char *cwd = get_working_directory();
-    printf("%s:%s $ ", name, cwd);
+    printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "localhost" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, name, cwd);
     free(name);
     free(cwd);
 }
