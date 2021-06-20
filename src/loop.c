@@ -40,7 +40,7 @@ void loop() {
             if (feof(stdin)) {
                 // the stdin was closed, this usually happens for CTRL-D
                 printf("\n");
-                exit(EXIT_SUCCESS);
+                break;
             }
             else  {
                 perror("Error: ");
