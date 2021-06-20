@@ -46,6 +46,9 @@ void loop() {
             else  {
                 perror("Error: ");
                 printf("\n");
+                if (line != NULL) {
+                    free(line);
+                }
                 exit(EXIT_FAILURE);
             }
         }
