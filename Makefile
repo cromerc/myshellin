@@ -20,7 +20,7 @@ endif
 clean: cleanmyshellin
 
 cleanmyshellin:
-	rm -f src/*.o myshellin
+	rm -f src/*.o $(FILENAME)
 
 cleaninforme:
 	make -C doc clean
