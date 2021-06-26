@@ -55,6 +55,5 @@ void print_input_line() {
     char *name = get_user();
     char *cwd = get_working_directory();
     printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "localhost" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, name, cwd);
-    free(name);
     free(cwd);
 }
