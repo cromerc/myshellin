@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "array.h"
+#include "builtins.h"
 
 bool is_builtin(char *command) {
     if (strcmp(command, "exit") == 0) {
@@ -31,11 +32,11 @@ bool is_builtin(char *command) {
 
 void run_builtin(StringArray *string_array) {
     if (strcmp(string_array->array[0], "exit") == 0) {
-        free_string_array(string_array);
-        exit(EXIT_SUCCESS);
+        exit_shell(string_array);
     }
 }
 
-void exit_shell() {
-    
+void exit_shell(StringArray *string_array) {
+    free_string_array(string_array);
+    exit(EXIT_SUCCESS);
 }
