@@ -1,0 +1,31 @@
+void loop() {
+    while (1) {
+        print_input_line();
+
+        char *line = get_console_input();
+
+        StringArray args;
+        create_string_array(&args);
+
+        char *saveptr = NULL;
+        char *token = strtok_r(line, " ", &saveptr);
+        while (token) {
+            insert_string_array(&args, token);
+            token = strtok_r(NULL, " ", &saveptr);
+        }
+        if (line != NULL) {
+            free(line);
+            line = NULL;
+        }
+
+        if (args.size == 0) {
+            continue;
+        }
+
+        if (is_builtin(args.array[0])) {
+            run_builtin(&args);
+        }
+
+        free_string_array(&args);
+    }
+}
