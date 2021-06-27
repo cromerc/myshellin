@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "array.h"
+#include "builtins.h"
 #include "console_line.h"
 
 /**
@@ -42,13 +44,15 @@ void loop() {
                 printf("\n");
                 if (line != NULL) {
                     free(line);
+                    line = NULL;
                 }
-                break;
+                exit(EXIT_SUCCESS);
             }
             else  {
                 perror("getline() error: ");
                 if (line != NULL) {
                     free(line);
+                    line = NULL;
                 }
                 exit(EXIT_FAILURE);
             }
@@ -56,11 +60,29 @@ void loop() {
 
         remove_new_line(line);
 
-        if (strcmp(line, "quit") == 0) {
-            if (line != NULL) {
-                free(line);
-            }
-            break;
+        StringArray string_array;
+        create_string_array(&string_array);
+
+        char *saveptr = NULL;
+        char *token = strtok_r(line, " ", &saveptr);
+        while (token) {
+            insert_string_array(&string_array, token);
+            token = strtok_r(NULL, " ", &saveptr);
         }
+        if (line != NULL) {
+            free(line);
+            line = NULL;
+        }
+
+        // The user didn't type anything so restart the loop
+        if (string_array.size == 0) {
+            continue;
+        }
+
+        if (is_builtin(string_array.array[0])) {
+            run_builtin(&string_array);
+        }
+
+        free_string_array(&string_array);
     }
 }

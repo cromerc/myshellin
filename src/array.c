@@ -13,47 +13,47 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _GNU_SOURCE
-#include <limits.h>
-#include <pwd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include "color.h"
+#include <string.h>
+#include "array.h"
 
-/**
- * Get the logged in user's username.
- * @return Returns the logged in user's username.
- */
-char *get_user() {
-    struct passwd *pass;
-    pass = getpwuid(getuid());
-    return pass->pw_name;
+void create_string_array(StringArray *string_array) {
+    string_array->array = NULL;
+    string_array->size = 0;
 }
 
-/**
- * Get the current working directory of the shell.
- * @return Returns the current working directory.
- */
-char *get_working_directory() {
-    char *cwd = NULL;
-    cwd = getcwd(NULL, PATH_MAX);
-    if (cwd != NULL) {
-        return cwd;
+void insert_string_array(StringArray *string_array, char *string) {
+    if (string_array->size == 0) {
+        string_array->array = malloc(sizeof(char *));
     }
     else {
-        perror("getcwd() error: ");
-        exit(EXIT_FAILURE);
+        string_array->array = realloc(string_array->array, (string_array->size + 1) * sizeof(char *));
+    }
+    string_array->array[string_array->size] = malloc(sizeof(string));
+    strcpy(string_array->array[string_array->size], string);
+    string_array->size++;
+}
+
+void delete_string_array(StringArray *string_array, int index) {
+    if (string_array->size > 0 && string_array->size > index) {
+        for (int i = index; i < string_array->size - 1; i++) {
+            free(string_array->array[i]);
+            string_array->array[i] = NULL;
+            string_array->array[i] = malloc(sizeof(string_array->array[i + 1]));
+            strcpy(string_array->array[i], string_array->array[i + 1]);
+        }
+        free(string_array->array[string_array->size - 1]);
+        string_array->array[string_array->size - 1] = NULL;
+        string_array->array = realloc(string_array->array, (string_array->size - 1) * sizeof(char *));
+        string_array->size--;
     }
 }
 
-/**
- * Print the console line before the user input.
- */
-void print_input_line() {
-    char *name = get_user();
-    char *cwd = get_working_directory();
-    printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "localhost" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, name, cwd);
-    free(cwd);
+void free_string_array(StringArray *string_array) {
+    for (int i = 0; i < string_array->size; i++) {
+        free(string_array->array[i]);
+        string_array->array[i] = NULL;
+    }
+    free(string_array->array);
+    string_array->array = NULL;
+    string_array->size = 0;
 }
