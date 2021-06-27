@@ -40,13 +40,13 @@ void loop() {
 
         remove_new_line(line);
 
-        StringArray string_array;
-        create_string_array(&string_array);
+        StringArray args;
+        create_string_array(&args);
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(&string_array, token);
+            insert_string_array(&args, token);
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -55,14 +55,14 @@ void loop() {
         }
 
         // The user didn't type anything so restart the loop
-        if (string_array.size == 0) {
+        if (args.size == 0) {
             continue;
         }
 
-        if (is_builtin(string_array.array[0])) {
-            run_builtin(&string_array);
+        if (is_builtin(args.array[0])) {
+            run_builtin(&args);
         }
 
-        free_string_array(&string_array);
+        free_string_array(&args);
     }
 }

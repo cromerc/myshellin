@@ -37,19 +37,19 @@ bool is_builtin(char *command) {
 
 /**
  * Run the builtin command.
- * @param string_array An array of strings containing the arguments to run.
+ * @param args An array of strings containing the arguments to run.
  */
-void run_builtin(StringArray *string_array) {
-    if (strcmp(string_array->array[0], "exit") == 0) {
-        exit_shell(string_array);
+void run_builtin(StringArray *args) {
+    if (strcmp(args->array[0], "exit") == 0) {
+        exit_shell(args);
     }
 }
 
 /**
  * Exit the shell.
- * @param string_array The arguments that were used to call exit. This is used to free the memory before exit.
+ * @param args The arguments that were used to call exit. This is used to free the memory before exit.
  */
-void exit_shell(StringArray *string_array) {
-    free_string_array(string_array);
+void exit_shell(StringArray *args) {
+    free_string_array(args);
     exit(EXIT_SUCCESS);
 }
