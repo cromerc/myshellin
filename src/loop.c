@@ -33,30 +33,10 @@ void remove_new_line(char* line) {
  * This is the loop that checks for user input and acts on it.
  */
 void loop() {
-    size_t buffer_size = 0;
-    char *line = NULL;
-
     while (1) {
         print_input_line();
-        if (getline(&line, &buffer_size, stdin) == -1) {
-            if (feof(stdin)) {
-                // the stdin was closed, this usually happens for CTRL-D
-                printf("\n");
-                if (line != NULL) {
-                    free(line);
-                    line = NULL;
-                }
-                exit(EXIT_SUCCESS);
-            }
-            else  {
-                perror("getline() error: ");
-                if (line != NULL) {
-                    free(line);
-                    line = NULL;
-                }
-                exit(EXIT_FAILURE);
-            }
-        }
+
+        char *line = get_console_input();
 
         remove_new_line(line);
 

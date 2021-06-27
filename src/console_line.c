@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "color.h"
+#include "console_line.h"
 
 /**
  * Get the logged in user's username.
@@ -56,4 +57,30 @@ void print_input_line() {
     char *cwd = get_working_directory();
     printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "localhost" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, name, cwd);
     free(cwd);
+}
+
+char *get_console_input() {
+    size_t buffer_size = 0;
+    char *line = NULL;
+
+    if (getline(&line, &buffer_size, stdin) == -1) {
+        if (feof(stdin)) {
+            // the stdin was closed, this usually happens for CTRL-D
+            printf("\n");
+            if (line != NULL) {
+                free(line);
+                line = NULL;
+            }
+            exit(EXIT_SUCCESS);
+        }
+        else  {
+            perror("getline() error: ");
+            if (line != NULL) {
+                free(line);
+                line = NULL;
+            }
+            exit(EXIT_FAILURE);
+        }
+    }
+    return line;
 }

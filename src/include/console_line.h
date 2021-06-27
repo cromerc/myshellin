@@ -15,9 +15,13 @@
 
 #ifndef _MYSHELLIN_CONSOLE_LINE
 #define _MYSHELLIN_CONSOLE_LINE
+#define CONSOLE_BUFFER_SIZE 1024
+
 char *get_user();
 
 char *get_working_directory();
 
 void print_input_line();
+
+char *get_console_input();
 #endif
