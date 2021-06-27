@@ -13,10 +13,6 @@ void loop() {
             insert_string_array(&args, token);
             token = strtok_r(NULL, " ", &saveptr);
         }
-        if (line != NULL) {
-            free(line);
-            line = NULL;
-        }
 
         if (args.size == 0) {
             continue;
@@ -25,7 +21,5 @@ void loop() {
         if (is_builtin(args.array[0])) {
             run_builtin(&args);
         }
-
-        free_string_array(&args);
     }
 }
