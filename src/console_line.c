@@ -59,6 +59,10 @@ void print_input_line() {
     free(cwd);
 }
 
+/**
+ * Get input from the console.
+ * @return Returns a string input by the user.
+ */
 char *get_console_input() {
     size_t buffer_size = 0;
     char *line = NULL;

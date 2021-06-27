@@ -18,6 +18,11 @@
 #include "array.h"
 #include "builtins.h"
 
+/**
+ * Check if the command is a builtin or not.
+ * @param command String with the command name to check.
+ * @return Returns true if it's a builtin or false otherwise.
+ */
 bool is_builtin(char *command) {
     if (strcmp(command, "exit") == 0) {
         return true;
@@ -30,12 +35,20 @@ bool is_builtin(char *command) {
     return false;
 }
 
+/**
+ * Run the builtin command.
+ * @param string_array An array of strings containing the arguments to run.
+ */
 void run_builtin(StringArray *string_array) {
     if (strcmp(string_array->array[0], "exit") == 0) {
         exit_shell(string_array);
     }
 }
 
+/**
+ * Exit the shell.
+ * @param string_array The arguments that were used to call exit. This is used to free the memory before exit.
+ */
 void exit_shell(StringArray *string_array) {
     free_string_array(string_array);
     exit(EXIT_SUCCESS);

@@ -16,11 +16,20 @@
 #include <string.h>
 #include "array.h"
 
+/**
+ * Create a String Array by initializing its structure.
+ * @param string_array The String Array to create.
+ */
 void create_string_array(StringArray *string_array) {
     string_array->array = NULL;
     string_array->size = 0;
 }
 
+/**
+ * Insert a string into the String Array.
+ * @param string_array The String Array to insert into.
+ * @param string The string to insert into the String Array.
+ */
 void insert_string_array(StringArray *string_array, char *string) {
     if (string_array->size == 0) {
         string_array->array = malloc(sizeof(char *));
@@ -33,6 +42,11 @@ void insert_string_array(StringArray *string_array, char *string) {
     string_array->size++;
 }
 
+/**
+ * Delete a string from the String Array.
+ * @param string_array The String Array to delete from.
+ * @param index The index in the String Array to delete.
+ */
 void delete_string_array(StringArray *string_array, int index) {
     if (string_array->size > 0 && string_array->size > index) {
         for (int i = index; i < string_array->size - 1; i++) {
@@ -48,6 +62,10 @@ void delete_string_array(StringArray *string_array, int index) {
     }
 }
 
+/**
+ * Free the String Array and all of its strings.
+ * @param string_array The String Array to free.
+ */
 void free_string_array(StringArray *string_array) {
     for (int i = 0; i < string_array->size; i++) {
         free(string_array->array[i]);
