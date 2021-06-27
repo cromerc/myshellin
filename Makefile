@@ -15,6 +15,9 @@ informe:
 ifneq (, $(shell which pdflatex))
 	make -C doc
 	mv doc/Informe.pdf Informe.pdf
+else ifneq (, $(shell which pdftex))
+	make -C doc
+	mv doc/Informe.pdf Informe.pdf
 endif
 
 clean: cleanmyshellin
