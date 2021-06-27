@@ -13,6 +13,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
 #include <string.h>
 #include "array.h"
 
@@ -33,11 +34,23 @@ void create_string_array(StringArray *string_array) {
 void insert_string_array(StringArray *string_array, char *string) {
     if (string_array->size == 0) {
         string_array->array = malloc(sizeof(char *));
+        if (string_array->array == NULL) {
+            fprintf(stderr, "malloc failed");
+            exit(EXIT_FAILURE);
+        }
     }
     else {
         string_array->array = realloc(string_array->array, (string_array->size + 1) * sizeof(char *));
+        if (string_array->array == NULL) {
+            fprintf(stderr, "realloc failed");
+            exit(EXIT_FAILURE);
+        }
     }
     string_array->array[string_array->size] = malloc(sizeof(string));
+    if (string_array->array == NULL) {
+        fprintf(stderr, "malloc failed");
+        exit(EXIT_FAILURE);
+    }
     strcpy(string_array->array[string_array->size], string);
     string_array->size++;
 }
@@ -53,11 +66,19 @@ void delete_string_array(StringArray *string_array, int index) {
             free(string_array->array[i]);
             string_array->array[i] = NULL;
             string_array->array[i] = malloc(sizeof(string_array->array[i + 1]));
+            if (string_array->array[i] == NULL) {
+                fprintf(stderr, "malloc failed");
+                exit(EXIT_FAILURE);
+            }
             strcpy(string_array->array[i], string_array->array[i + 1]);
         }
         free(string_array->array[string_array->size - 1]);
         string_array->array[string_array->size - 1] = NULL;
         string_array->array = realloc(string_array->array, (string_array->size - 1) * sizeof(char *));
+        if (string_array->array == NULL) {
+            fprintf(stderr, "realloc failed");
+            exit(EXIT_FAILURE);
+        }
         string_array->size--;
     }
 }
@@ -68,10 +89,14 @@ void delete_string_array(StringArray *string_array, int index) {
  */
 void free_string_array(StringArray *string_array) {
     for (int i = 0; i < string_array->size; i++) {
-        free(string_array->array[i]);
-        string_array->array[i] = NULL;
+        if (string_array->array[i] != NULL) {
+            free(string_array->array[i]);
+            string_array->array[i] = NULL;
+        }
     }
-    free(string_array->array);
-    string_array->array = NULL;
+    if (string_array->array != NULL) {
+        free(string_array->array);
+        string_array->array = NULL;
+    }
     string_array->size = 0;
 }

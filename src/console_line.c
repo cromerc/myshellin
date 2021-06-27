@@ -50,6 +50,10 @@ char *get_hostname() {
     char hostname[HOST_NAME_MAX + 1];
     gethostname(hostname, HOST_NAME_MAX + 1);
     char *result = malloc((HOST_NAME_MAX + 1) * sizeof(char));
+    if (result == NULL) {
+        fprintf(stderr, "malloc failed");
+        exit(EXIT_FAILURE);
+    }
     strcpy(result, hostname);
     return result;
 }
