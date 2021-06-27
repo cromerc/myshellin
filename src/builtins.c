@@ -14,6 +14,7 @@
  */
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include "array.h"
 #include "builtins.h"
@@ -42,6 +43,11 @@ bool is_builtin(char *command) {
 void run_builtin(StringArray *args) {
     if (strcmp(args->array[0], "exit") == 0) {
         exit_shell(args);
+    }
+    else {
+        fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
+        free_string_array(args);
+        exit(EXIT_FAILURE);
     }
 }
 

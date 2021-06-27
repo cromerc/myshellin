@@ -39,6 +39,10 @@ void remove_new_line(char* line) {
 char *get_username() {
     struct passwd *pass;
     pass = getpwuid(getuid());
+    if (pass == NULL) {
+        perror("getpwuid");
+        exit(EXIT_FAILURE);
+    }
     return pass->pw_name;
 }
 
@@ -51,7 +55,7 @@ char *get_hostname() {
     gethostname(hostname, HOST_NAME_MAX + 1);
     char *result = malloc((HOST_NAME_MAX + 1) * sizeof(char));
     if (result == NULL) {
-        fprintf(stderr, "malloc failed");
+        perror("malloc");
         exit(EXIT_FAILURE);
     }
     strcpy(result, hostname);
@@ -65,13 +69,11 @@ char *get_hostname() {
 char *get_working_directory() {
     char *cwd = NULL;
     cwd = getcwd(NULL, PATH_MAX);
-    if (cwd != NULL) {
-        return cwd;
-    }
-    else {
-        perror("getcwd() error: ");
+    if (cwd == NULL) {
+        perror("getcwd");
         exit(EXIT_FAILURE);
     }
+    return cwd;
 }
 
 /**
@@ -105,7 +107,7 @@ char *get_console_input() {
             exit(EXIT_SUCCESS);
         }
         else  {
-            perror("getline() error: ");
+            perror("getline");
             if (line != NULL) {
                 free(line);
                 line = NULL;
