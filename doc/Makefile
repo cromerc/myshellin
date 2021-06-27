@@ -4,6 +4,6 @@ informe:
 	pdflatex -synctex=1 -interaction=nonstopmode "Informe.tex"
 
 clean:
-	rm -f *.log *.toc *.gz *.aux *.out Informe.pdf
+	rm -f *.log *.toc *.gz *.aux sections/*.aux *.out Informe.pdf
 
 .PHONY: informe clean
