@@ -78,6 +78,7 @@ void print_input_line() {
     char *hostname = get_hostname();
     char *cwd = get_working_directory();
     printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "%s" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, username, hostname, cwd);
+    free(hostname);
     free(cwd);
 }
 
