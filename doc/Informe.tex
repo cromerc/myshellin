@@ -9,17 +9,33 @@
 \usepackage{array}
 \usepackage{adjustbox}
 \usepackage{titling}
-\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,a4paper]{geometry}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,letterpaper]{geometry}
 \usepackage{amsmath}
-
 \usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinestyle{freefempp}{
+    language=C,
+    basicstyle=\scriptsize\ttfamily,
+    commentstyle=\itshape\color{gray},
+    keywordstyle=\color{blue},
+    numberstyle=\color{red},
+    stringstyle=\color{red},
+    identifierstyle=\color{violet},
+    showstringspaces=false,
+    %float,
+    %frame=single,
+    %numbers=left
+}
+
 \lstset{
-	basicstyle=\small\ttfamily,
-	columns=flexible,
-	breaklines=true,
-	inputencoding=utf8,
-	extendedchars=true,
-	literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1
+    basicstyle=\footnotesize\ttfamily,
+    columns=flexible,
+    breaklines=true,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1,
+    style=freefempp
 }
 
 \usepackage{hyperref}
@@ -62,11 +78,11 @@ Carlos Faúndez
 \hypersetup{pageanchor=true}
 \pagenumbering{arabic}
 
-\newpage
-\section{Introducción}
+\include{sections/introduccion}
 
-\newpage
-\section{Conclusiones}
+\include{sections/codigo}
+
+\include{sections/conclusiones}
 
 \end{document}
 
