@@ -22,51 +22,21 @@
 #include "console_line.h"
 
 /**
- * Remove new line from the end of a string.
- * @param line The string to remove the new line from.
- */
-void remove_new_line(char* line) {
-    line[strcspn(line, "\n")] = 0;
-}
-
-/**
  * This is the loop that checks for user input and acts on it.
  */
 void loop() {
-    size_t buffer_size = 0;
-    char *line = NULL;
-
     while (1) {
         print_input_line();
-        if (getline(&line, &buffer_size, stdin) == -1) {
-            if (feof(stdin)) {
-                // the stdin was closed, this usually happens for CTRL-D
-                printf("\n");
-                if (line != NULL) {
-                    free(line);
-                    line = NULL;
-                }
-                exit(EXIT_SUCCESS);
-            }
-            else  {
-                perror("getline() error: ");
-                if (line != NULL) {
-                    free(line);
-                    line = NULL;
-                }
-                exit(EXIT_FAILURE);
-            }
-        }
 
-        remove_new_line(line);
+        char *line = get_console_input();
 
-        StringArray string_array;
-        create_string_array(&string_array);
+        StringArray args;
+        create_string_array(&args);
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(&string_array, token);
+            insert_string_array(&args, token);
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -75,14 +45,14 @@ void loop() {
         }
 
         // The user didn't type anything so restart the loop
-        if (string_array.size == 0) {
+        if (args.size == 0) {
             continue;
         }
 
-        if (is_builtin(string_array.array[0])) {
-            run_builtin(&string_array);
+        if (is_builtin(args.array[0])) {
+            run_builtin(&args);
         }
 
-        free_string_array(&string_array);
+        free_string_array(&args);
     }
 }

@@ -29,5 +29,4 @@ void insert_string_array(StringArray *string_array, char *string);
 void delete_string_array(StringArray *string_array, int index);
 
 void free_string_array(StringArray *string_array);
-
 #endif

@@ -15,7 +15,17 @@
 
 #ifndef _MYSHELLIN_CONSOLE_LINE
 #define _MYSHELLIN_CONSOLE_LINE
-char *get_user();
+#define CONSOLE_BUFFER_SIZE 1024
+
+void remove_new_line(char *line);
+
+char *get_username();
+
+char *get_hostname();
+
 char *get_working_directory();
+
 void print_input_line();
+
+char *get_console_input();
 #endif
