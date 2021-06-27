@@ -46,8 +46,6 @@ void run_builtin(StringArray *args) {
     }
     else {
         fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
-        free_string_array(args);
-        exit(EXIT_FAILURE);
     }
 }
 
