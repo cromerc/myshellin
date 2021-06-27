@@ -18,19 +18,40 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include "color.h"
 #include "console_line.h"
 
 /**
+ * Remove new line from the end of a string.
+ * @param line The string to remove the new line from.
+ */
+void remove_new_line(char* line) {
+    line[strcspn(line, "\n")] = 0;
+}
+
+/**
  * Get the logged in user's username.
  * @return Returns the logged in user's username.
  */
-char *get_user() {
+char *get_username() {
     struct passwd *pass;
     pass = getpwuid(getuid());
     return pass->pw_name;
+}
+
+/**
+ * Get the hostname of the machine.
+ * @return Returns the hostname.
+ */
+char *get_hostname() {
+    char hostname[HOST_NAME_MAX + 1];
+    gethostname(hostname, HOST_NAME_MAX + 1);
+    char *result = malloc((HOST_NAME_MAX + 1) * sizeof(char));
+    strcpy(result, hostname);
+    return result;
 }
 
 /**
@@ -53,9 +74,10 @@ char *get_working_directory() {
  * Print the console line before the user input.
  */
 void print_input_line() {
-    char *name = get_user();
+    char *username = get_username();
+    char *hostname = get_hostname();
     char *cwd = get_working_directory();
-    printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "localhost" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, name, cwd);
+    printf(BRIGHT_CYAN "%s" MAGENTA "@" RED "%s" MAGENTA ":" BLUE "%s" MAGENTA "$ " RESET, username, hostname, cwd);
     free(cwd);
 }
 
@@ -86,5 +108,6 @@ char *get_console_input() {
             exit(EXIT_FAILURE);
         }
     }
+    remove_new_line(line);
     return line;
 }

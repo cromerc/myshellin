@@ -22,14 +22,6 @@
 #include "console_line.h"
 
 /**
- * Remove new line from the end of a string.
- * @param line The string to remove the new line from.
- */
-void remove_new_line(char* line) {
-    line[strcspn(line, "\n")] = 0;
-}
-
-/**
  * This is the loop that checks for user input and acts on it.
  */
 void loop() {
@@ -37,8 +29,6 @@ void loop() {
         print_input_line();
 
         char *line = get_console_input();
-
-        remove_new_line(line);
 
         StringArray args;
         create_string_array(&args);
