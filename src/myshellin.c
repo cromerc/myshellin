@@ -19,6 +19,7 @@
 /**
  * The main entry point to the program.
  * @param argc The number of arguments passed.
+ * @param argv An array with the arguments passed.
  * @return Returns 0 on success or an error code on failure.
  */
 int main(int argc, char **argv) {
