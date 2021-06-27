@@ -16,6 +16,8 @@
 #ifndef _MYSHELLIN_CONSOLE_LINE
 #define _MYSHELLIN_CONSOLE_LINE
 char *get_user();
+
 char *get_working_directory();
+
 void print_input_line();
 #endif
