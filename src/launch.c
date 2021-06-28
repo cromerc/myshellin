@@ -15,48 +15,37 @@
 
 #define _GNU_SOURCE
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include "array.h"
-#include "builtins.h"
-#include "console_line.h"
-#include "launch.h"
 
 /**
- * This is the loop that checks for user input and acts on it.
+ * Launch programs from the OS.
+ * @param args The arguments to launch.
  */
-void loop() {
-    while (1) {
-        print_input_line();
+void launch_program(StringArray *args) {
+    pid_t child = 0;
 
-        char *line = get_console_input();
+    child = fork();
 
-        StringArray args;
-        create_string_array(&args);
-
-        char *saveptr = NULL;
-        char *token = strtok_r(line, " ", &saveptr);
-        while (token) {
-            insert_string_array(&args, token);
-            token = strtok_r(NULL, " ", &saveptr);
+    if (child == 0) {
+        // Copy the array and add a NULL to the end of it
+        char *argv[args->size + 1];
+        for (int i = 0; i < args->size; i++) {
+            argv[i] = args->array[i];
         }
-        if (line != NULL) {
-            free(line);
-            line = NULL;
-        }
+        argv[args->size] = NULL;
 
-        // The user didn't type anything so restart the loop
-        if (args.size == 0) {
-            continue;
-        }
-
-        if (is_builtin(args.array[0])) {
-            run_builtin(&args);
-        }
-        else {
-            launch_program(&args);
-        }
-
-        free_string_array(&args);
+        execvp(args->array[0], argv);
+        fprintf(stderr, "%s: command not found\n", args->array[0]);
+        exit(EXIT_FAILURE);
+    }
+    else if (child < 0) {
+        perror("fork");
+    }
+    else {
+        int child_status;
+        waitpid(child, &child_status, 0);
     }
 }

@@ -20,7 +20,7 @@
 #define _MYSHELLIN_BUILTINS
 bool is_builtin(char *command);
 
-void run_builtin(StringArray *string_array);
+void run_builtin(StringArray *args);
 
-void exit_shell(StringArray *string_array);
+void exit_shell(StringArray *args);
 #endif
