@@ -38,7 +38,8 @@ void launch_program(StringArray *args) {
         argv[args->size] = NULL;
 
         execvp(args->array[0], argv);
-        perror("execvpe");
+        fprintf(stderr, "%s: command not found\n", args->array[0]);
+        exit(EXIT_FAILURE);
     }
     else if (child < 0) {
         perror("fork");
