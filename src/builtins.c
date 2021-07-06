@@ -16,8 +16,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "array.h"
 #include "builtins.h"
+#include "console_line.h"
 
 /**
  * Check if the command is a builtin or not.
@@ -44,6 +46,9 @@ void run_builtin(StringArray *args) {
     if (strcmp(args->array[0], "exit") == 0) {
         exit_shell(args);
     }
+    else if (strcmp(args->array[0], "cd") == 0) {
+        change_directory(args);
+    }
     else {
         fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
     }
@@ -56,4 +61,28 @@ void run_builtin(StringArray *args) {
 void exit_shell(StringArray *args) {
     free_string_array(args);
     exit(EXIT_SUCCESS);
+}
+
+/**
+ * Change the directory to what the user inputs.
+ * @param args The arguments the user input.
+ */
+void change_directory(StringArray *args) {
+    if (args->size > 2) {
+        fprintf(stderr, "Too many arguments!\n");
+        return;
+    }
+    else if (args->size == 1) {
+        char *cwd = get_working_directory();
+        fprintf(stdout, "%s\n", cwd);
+        if (cwd != NULL) {
+            free(cwd);
+            cwd = NULL;
+        }
+    }
+    else {
+        if (chdir(args->array[1]) != 0) {
+            perror("cd");
+        }
+    }
 }

@@ -23,4 +23,6 @@ bool is_builtin(char *command);
 void run_builtin(StringArray *args);
 
 void exit_shell(StringArray *args);
+
+void change_directory(StringArray *args);
 #endif
