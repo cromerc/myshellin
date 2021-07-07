@@ -62,7 +62,7 @@ void insert_string_array(StringArray *string_array, char *string) {
  */
 void delete_string_array(StringArray *string_array, int index) {
     if (string_array->array != NULL && string_array->size > 0 && string_array->size > index) {
-        for (int i = index; i < string_array->size - 1; i++) {
+        for (size_t i = index; i < string_array->size - 1; i++) {
             free(string_array->array[i]);
             string_array->array[i] = NULL;
             string_array->array[i] = malloc(sizeof(string_array->array[i + 1]));
@@ -99,7 +99,7 @@ void free_string_array(StringArray *string_array) {
         exit(EXIT_FAILURE);
     }
     else {
-        for (int i = 0; i < string_array->size; i++) {
+        for (size_t i = 0; i < string_array->size; i++) {
             if (string_array->array[i] != NULL) {
                 free(string_array->array[i]);
                 string_array->array[i] = NULL;

@@ -32,7 +32,7 @@ void launch_program(StringArray *args) {
     if (child == 0) {
         // Copy the array and add a NULL to the end of it
         char *argv[args->size + 1];
-        for (int i = 0; i < args->size; i++) {
+        for (size_t i = 0; i < args->size; i++) {
             argv[i] = args->array[i];
         }
         argv[args->size] = NULL;
