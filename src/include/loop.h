@@ -15,5 +15,9 @@
 
 #ifndef _MYSHELLIN_LOOP
 #define _MYSHELLIN_LOOP
+void add_to_cleanup(void *data);
+
+void exit_cleanup();
+
 void loop();
 #endif
