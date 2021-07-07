@@ -30,6 +30,10 @@ static CleanArray clean;
  */
 void add_to_cleanup(void *data) {
     clean.array = realloc(clean.array, (clean.size + 1) * sizeof(void *));
+    if (clean.array == NULL) {
+        perror("realloc");
+        exit(EXIT_FAILURE);
+    }
     clean.array[clean.size++] = data;
 }
 
