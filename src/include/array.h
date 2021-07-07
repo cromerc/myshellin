@@ -22,6 +22,11 @@ typedef struct {
     size_t size;
 } StringArray;
 
+typedef struct {
+    void **array;
+    size_t size;
+} CleanArray;
+
 void create_string_array(StringArray *string_array);
 
 void insert_string_array(StringArray *string_array, char *string);
