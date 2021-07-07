@@ -84,8 +84,14 @@ void print_input_line() {
     char *hostname = get_hostname();
     char *cwd = get_working_directory();
     printf(BRIGHT_GREEN "%s" RESET BRIGHT_MAGENTA "@" RESET BRIGHT_RED "%s" RESET BRIGHT_MAGENTA ":" RESET BRIGHT_BLUE "%s" RESET BRIGHT_MAGENTA "$ " RESET, username, hostname, cwd);
-    free(hostname);
-    free(cwd);
+    if (hostname != NULL) {
+        free(hostname);
+        hostname = NULL;
+    }
+    if (cwd != NULL) {
+        free(cwd);
+        cwd = NULL;
+    }
 }
 
 /**
