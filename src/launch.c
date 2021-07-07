@@ -39,6 +39,7 @@ void launch_program(StringArray *args) {
 
         execvp(args->array[0], argv);
         fprintf(stderr, "%s: command not found\n", args->array[0]);
+        free_string_array(args);
         exit(EXIT_FAILURE);
     }
     else if (child < 0) {
