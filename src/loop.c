@@ -64,13 +64,12 @@ void loop() {
 
         char *line = get_console_input();
 
-        StringArray args;
-        create_string_array(&args);
+        StringArray *args = create_string_array();
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(&args, token);
+            insert_string_array(args, token);
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -79,17 +78,17 @@ void loop() {
         }
 
         // The user didn't type anything so restart the loop
-        if (args.size == 0) {
+        if (args->size == 0) {
             continue;
         }
 
-        if (is_builtin(args.array[0])) {
-            run_builtin(&args);
+        if (is_builtin(args->array[0])) {
+            run_builtin(args);
         }
         else {
-            launch_program(&args);
+            launch_program(args);
         }
 
-        free_string_array(&args);
+        free_string_array(args);
     }
 }

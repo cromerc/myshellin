@@ -27,7 +27,7 @@ typedef struct {
     size_t size;
 } CleanArray;
 
-void create_string_array(StringArray *string_array);
+StringArray *create_string_array();
 
 void insert_string_array(StringArray *string_array, char *string);
 

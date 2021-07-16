@@ -19,11 +19,13 @@
 
 /**
  * Create a String Array by initializing its structure.
- * @param string_array The String Array to create.
+ * @return Returns a new String Array.
  */
-void create_string_array(StringArray *string_array) {
+StringArray *create_string_array() {
+    StringArray *string_array = malloc(sizeof(StringArray));
     string_array->array = NULL;
     string_array->size = 0;
+    return string_array;
 }
 
 /**
@@ -93,22 +95,19 @@ void delete_string_array(StringArray *string_array, int index) {
  * @param string_array The String Array to free.
  */
 void free_string_array(StringArray *string_array) {
-    if (string_array->array == NULL) {
-        fprintf(stderr, "StringArray is not freeable!\n");
-        free_string_array(string_array);
-        exit(EXIT_FAILURE);
+    for (size_t i = 0; i < string_array->size; i++) {
+        if (string_array->array[i] != NULL) {
+            free(string_array->array[i]);
+            string_array->array[i] = NULL;
+        }
     }
-    else {
-        for (size_t i = 0; i < string_array->size; i++) {
-            if (string_array->array[i] != NULL) {
-                free(string_array->array[i]);
-                string_array->array[i] = NULL;
-            }
-        }
-        if (string_array->array != NULL) {
-            free(string_array->array);
-            string_array->array = NULL;
-        }
-        string_array->size = 0;
+    if (string_array->array != NULL) {
+        free(string_array->array);
+        string_array->array = NULL;
+    }
+    string_array->size = 0;
+    if (string_array != NULL) {
+        free(string_array);
+        string_array = NULL;
     }
 }
