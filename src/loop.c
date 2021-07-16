@@ -79,6 +79,7 @@ void loop() {
 
         // The user didn't type anything so restart the loop
         if (args->size == 0) {
+            free_string_array(args);
             continue;
         }
 
