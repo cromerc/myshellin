@@ -30,17 +30,11 @@ void launch_program(StringArray *args) {
     child = fork();
 
     if (child == 0) {
-        // Copy the array and add a NULL to the end of it
-        char *argv[args->size + 1];
-        for (size_t i = 0; i < args->size; i++) {
-            argv[i] = args->array[i];
+        if (execvp(args->array[0], args->array) == -1) {
+            fprintf(stderr, "%s: command not found\n", args->array[0]);
+            free_string_array(args);
+            exit(EXIT_FAILURE);
         }
-        argv[args->size] = NULL;
-
-        execvp(args->array[0], argv);
-        fprintf(stderr, "%s: command not found\n", args->array[0]);
-        free_string_array(args);
-        exit(EXIT_FAILURE);
     }
     else if (child < 0) {
         perror("fork");

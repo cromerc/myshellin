@@ -23,6 +23,10 @@
  */
 StringArray *create_string_array() {
     StringArray *string_array = malloc(sizeof(StringArray));
+    if (string_array == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
     string_array->array = NULL;
     string_array->size = 0;
     return string_array;
@@ -35,25 +39,30 @@ StringArray *create_string_array() {
  */
 void insert_string_array(StringArray *string_array, char *string) {
     if (string_array->size == 0) {
-        string_array->array = malloc(sizeof(char *));
+        string_array->array = malloc(2 * sizeof(char *));
         if (string_array->array == NULL) {
             perror("malloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
     }
     else {
-        string_array->array = realloc(string_array->array, (string_array->size + 1) * sizeof(char *));
+        string_array->array = realloc(string_array->array, (string_array->size + 2) * sizeof(char *));
         if (string_array->array == NULL) {
             perror("realloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
     }
     string_array->array[string_array->size] = malloc(sizeof(string));
     if (string_array->array == NULL) {
         perror("malloc");
+        free_string_array(string_array);
         exit(EXIT_FAILURE);
     }
     strcpy(string_array->array[string_array->size], string);
+    // A NULL terminated array
+    string_array->array[string_array->size + 1] = NULL;
     string_array->size++;
 }
 
@@ -76,9 +85,10 @@ void delete_string_array(StringArray *string_array, int index) {
         }
         free(string_array->array[string_array->size - 1]);
         string_array->array[string_array->size - 1] = NULL;
-        string_array->array = realloc(string_array->array, (string_array->size - 1) * sizeof(char *));
+        string_array->array = realloc(string_array->array, (string_array->size) * sizeof(char *));
         if (string_array->array == NULL) {
             perror("realloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
         string_array->size--;
