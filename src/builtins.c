@@ -30,6 +30,10 @@ bool is_builtin(char *command) {
         return true;
     }
 
+    if (strcmp(command, "environ") == 0) {
+        return true;
+    }
+
     return false;
 }
 
@@ -39,6 +43,9 @@ void run_builtin(StringArray *args) {
     }
     else if (strcmp(args->array[0], "cd") == 0) {
         change_directory(args);
+    }
+    else if (strcmp(args->array[0], "environ") == 0) {
+        print_environ(args);
     }
     else {
         fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
@@ -70,5 +77,15 @@ void change_directory(StringArray *args) {
         else {
             set_array_list(variables, "PWD", get_working_directory());
         }
+    }
+}
+
+void print_environ(StringArray *args) {
+    if (args->size > 1) {
+        fprintf(stderr, "Too many arguments!\n");
+        return;
+    }
+    for (size_t i = 0; i < variables->size; i++) {
+        fprintf(stdout, "%s=%s\n", variables->keys->array[i], variables->values->array[i]);
     }
 }

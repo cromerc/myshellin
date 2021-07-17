@@ -44,4 +44,10 @@ void exit_shell(StringArray *args);
  */
 void change_directory(StringArray *args);
 
+/**
+ * Print all of the environment variables.
+ * @param args The arguments the user input.
+ */
+void print_environ(StringArray * args);
+
 #endif
