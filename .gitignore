@@ -6,3 +6,4 @@ myshellin
 *.gz
 *.aux
 *.out
+compile_commands.json
