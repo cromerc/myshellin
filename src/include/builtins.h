@@ -56,4 +56,10 @@ void print_environ(StringArray *args);
  */
 void set_variable(StringArray *args);
 
+/**
+ * Print a message or variable.
+ * @param args The arguments passed to echo.
+ */
+void echo(StringArray *args);
+
 #endif

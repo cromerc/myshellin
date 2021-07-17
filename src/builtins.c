@@ -39,6 +39,10 @@ bool is_builtin(char *command) {
         return true;
     }
 
+    if (strcmp(command, "echo") == 0) {
+        return true;
+    }
+
     return false;
 }
 
@@ -54,6 +58,9 @@ void run_builtin(StringArray *args) {
     }
     else if (strcmp(args->array[0], "set") == 0) {
         set_variable(args);
+    }
+    else if (strcmp(args->array[0], "echo") == 0) {
+        echo(args);
     }
     else {
         fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
@@ -174,7 +181,7 @@ void set_variable(StringArray *args) {
         free_string_array(chdir_args);
         free(variable);
         free(value);
-        // return without setting the variable because change directory will set it on success.
+        // Return without setting the variable because change directory will set it on success
         return;
     }
 
@@ -182,4 +189,51 @@ void set_variable(StringArray *args) {
 
     free(variable);
     free(value);
+}
+
+void echo(StringArray *args) {
+    StringArray *no_variables = create_string_array();
+
+    for (size_t i = 1; i < args->size; i++) {
+        if (args->array[i][0] == '$') {
+            char *variable = malloc((strlen(args->array[i])) * sizeof(char *));
+            if (variable == NULL) {
+                perror("malloc");
+                exit(EXIT_FAILURE);
+            }
+            memset(variable, 0, strlen(args->array[i]));
+
+            // Remove the $ symbol
+            for (size_t j = 0; j < strlen(args->array[i]); j++) {
+                variable[j] = args->array[i][j + 1];
+            }
+
+            char *value = get_array_list(variables, variable);
+            if (value == NULL) {
+                insert_string_array(no_variables, variable);
+            }
+            else {
+                if (i != 1) {
+                    fprintf(stdout, " ");
+                }
+                fprintf(stdout, "%s", value);
+            }
+        }
+        else {
+            if (i != 1) {
+                fprintf(stdout, " ");
+            }
+            fprintf(stdout, "%s", args->array[i]);
+        }
+    }
+    if (args->size > 0) {
+        fprintf(stdout, "\n");
+    }
+
+    for (size_t i = 0; i < no_variables->size; i++) {
+        if (i == 0) {
+            fprintf(stderr, "\n");
+        }
+        fprintf(stderr, "The variable %s doesn't exist!\n", no_variables->array[i]);
+    }
 }
