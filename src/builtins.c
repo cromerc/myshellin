@@ -133,6 +133,9 @@ void set_variable(StringArray *args) {
 
     // Check variable name for invalid characters
     for (size_t i = 0; i < strlen(variable); i++) {
+        if (variable[i] == 0) {
+            break;
+        }
         if (!((variable[i] >= 48 && variable[i] <= 57) || 
                 (variable[i] >= 65 && variable[i] <= 90) ||
                 (variable[i] >= 97 && variable[i] <= 122))) {
