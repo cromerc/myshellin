@@ -7,3 +7,4 @@ myshellin
 *.aux
 *.out
 compile_commands.json
+.clangd
