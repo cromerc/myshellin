@@ -51,7 +51,10 @@ void loop() {
     atexit(exit_cleanup);
     char *cwd = get_working_directory();
     set_array_list(variables, "PWD", cwd);
-    free(cwd);
+    if (cwd != NULL) {
+        free(cwd);
+        cwd = NULL;
+    }
 
     while (1) {
         print_input_line();
