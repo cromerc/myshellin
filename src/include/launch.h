@@ -17,5 +17,11 @@
 
 #ifndef _MYSHELLIN_LAUNCH
 #define _MYSHELLIN_LAUNCH
+
+/**
+ * Launch programs from the OS.
+ * @param args The arguments to launch.
+ */
 void launch_program(StringArray *args);
+
 #endif

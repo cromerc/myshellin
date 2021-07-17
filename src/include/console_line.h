@@ -15,17 +15,42 @@
 
 #ifndef _MYSHELLIN_CONSOLE_LINE
 #define _MYSHELLIN_CONSOLE_LINE
+
 #define CONSOLE_BUFFER_SIZE 1024
 
+/**
+ * Remove new line from the end of a string.
+ * @param line The string to remove the new line from.
+ */
 void remove_new_line(char *line);
 
+/**
+ * Get the logged in user's username.
+ * @return Returns the logged in user's username.
+ */
 char *get_username();
 
+/**
+ * Get the hostname of the machine.
+ * @return Returns the hostname.
+ */
 char *get_hostname();
 
+/**
+ * Get the current working directory of the shell.
+ * @return Returns the current working directory.
+ */
 char *get_working_directory();
 
+/**
+ * Print the console line before the user input.
+ */
 void print_input_line();
 
+/**
+ * Get input from the console.
+ * @return Returns a string input by the user.
+ */
 char *get_console_input();
+
 #endif

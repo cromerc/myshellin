@@ -17,10 +17,6 @@
 #include <string.h>
 #include "array.h"
 
-/**
- * Create a String Array by initializing its structure.
- * @return Returns a new String Array.
- */
 StringArray *create_string_array() {
     StringArray *string_array = malloc(sizeof(StringArray));
     if (string_array == NULL) {
@@ -32,11 +28,6 @@ StringArray *create_string_array() {
     return string_array;
 }
 
-/**
- * Insert a string into the String Array.
- * @param string_array The String Array to insert into.
- * @param string The string to insert into the String Array.
- */
 void insert_string_array(StringArray *string_array, char *string) {
     if (string_array->array == NULL) {
         string_array->array = malloc(2 * sizeof(char *));
@@ -66,11 +57,6 @@ void insert_string_array(StringArray *string_array, char *string) {
     string_array->size++;
 }
 
-/**
- * Delete a string from the String Array.
- * @param string_array The String Array to delete from.
- * @param index The index in the String Array to delete.
- */
 void delete_string_array(StringArray *string_array, int index) {
     if (string_array->array != NULL && string_array->size > 0 && string_array->size > index) {
         for (size_t i = index; i < string_array->size - 1; i++) {
@@ -100,10 +86,6 @@ void delete_string_array(StringArray *string_array, int index) {
     }
 }
 
-/**
- * Free the String Array and all of its strings.
- * @param string_array The String Array to free.
- */
 void free_string_array(StringArray *string_array) {
     for (size_t i = 0; i < string_array->size; i++) {
         if (string_array->array[i] != NULL) {
@@ -122,10 +104,6 @@ void free_string_array(StringArray *string_array) {
     }
 }
 
-/**
- * Create a new Array List.
- * @return Returns the newly created Array List.
- */
 ArrayList *create_array_list() {
     ArrayList *array_list = malloc(sizeof(ArrayList));
     if (array_list == NULL) {
@@ -138,12 +116,6 @@ ArrayList *create_array_list() {
     return array_list;
 }
 
-/**
- * Set a key inside the Array List.
- * @param array_list The Array List to work on.
- * @param key The key to insert/update.
- * @param value The value to insert/update.
- */
 void set_array_list(ArrayList *array_list, char *key, char *value) {
     if (array_list->keys == NULL) {
         array_list->keys = create_string_array();
@@ -165,12 +137,6 @@ void set_array_list(ArrayList *array_list, char *key, char *value) {
     array_list->size++;
 }
 
-/**
- * Get a value based on a key from an Array List.
- * @param array_list The Array List to work on.
- * @param key The key to search for.
- * @return Returns the value if the key is found in the Array List otherwise it returns NULL.
- */
 char *get_array_list(ArrayList *array_list, char *key) {
     if (array_list->keys != NULL) {
         for (size_t i = 0; i < array_list->size; i++) {
@@ -182,11 +148,6 @@ char *get_array_list(ArrayList *array_list, char *key) {
     return NULL;
 }
 
-/**
- * Remove a key from the Array List.
- * @param array_list The Array List to work on.
- * @param key The key to remove.
- */
 void unset_array_list(ArrayList *array_list, char *key) {
     if (array_list->keys != NULL) {
         for (size_t i = 0; i < array_list->size; i++) {
@@ -200,10 +161,6 @@ void unset_array_list(ArrayList *array_list, char *key) {
     }
 }
 
-/**
- * Free all the memory used in the Array List.
- * @param array_list The Array List to free.
- */
 void free_array_list(ArrayList *array_list) {
     if (array_list != NULL) {
         free_string_array(array_list->keys);

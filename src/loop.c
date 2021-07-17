@@ -22,10 +22,6 @@
 #include "console_line.h"
 #include "launch.h"
 
-/**
- * Add memory address to array to be cleaned up later.
- * @param data The data to be cleaned up on exit.
- */
 void add_to_cleanup(void *data) {
     clean.array = realloc(clean.array, (clean.size + 1) * sizeof(void *));
     if (clean.array == NULL) {
@@ -35,9 +31,6 @@ void add_to_cleanup(void *data) {
     clean.array[clean.size++] = data;
 }
 
-/**
- * Cleanup memory when exiting.
- */
 void exit_cleanup() {
     for (size_t i = 0; i < clean.size; i++) {
         if (clean.array[i] != NULL) {
@@ -52,9 +45,6 @@ void exit_cleanup() {
     free_array_list(variables);
 }
 
-/**
- * This is the loop that checks for user input and acts on it.
- */
 void loop() {
     clean.size = 0;
     variables = create_array_list();

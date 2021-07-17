@@ -21,11 +21,6 @@
 #include "builtins.h"
 #include "console_line.h"
 
-/**
- * Check if the command is a builtin or not.
- * @param command String with the command name to check.
- * @return Returns true if it's a builtin or false otherwise.
- */
 bool is_builtin(char *command) {
     if (strcmp(command, "exit") == 0) {
         return true;
@@ -38,10 +33,6 @@ bool is_builtin(char *command) {
     return false;
 }
 
-/**
- * Run the builtin command.
- * @param args An array of strings containing the arguments to run.
- */
 void run_builtin(StringArray *args) {
     if (strcmp(args->array[0], "exit") == 0) {
         exit_shell(args);
@@ -54,19 +45,11 @@ void run_builtin(StringArray *args) {
     }
 }
 
-/**
- * Exit the shell.
- * @param args The arguments that were used to call exit. This is used to free the memory before exit.
- */
 void exit_shell(StringArray *args) {
     free_string_array(args);
     exit(EXIT_SUCCESS);
 }
 
-/**
- * Change the directory to what the user inputs.
- * @param args The arguments the user input.
- */
 void change_directory(StringArray *args) {
     if (args->size > 2) {
         fprintf(stderr, "Too many arguments!\n");

@@ -25,18 +25,10 @@
 #include "color.h"
 #include "console_line.h"
 
-/**
- * Remove new line from the end of a string.
- * @param line The string to remove the new line from.
- */
 void remove_new_line(char* line) {
     line[strcspn(line, "\n")] = 0;
 }
 
-/**
- * Get the logged in user's username.
- * @return Returns the logged in user's username.
- */
 char *get_username() {
     struct passwd *pass = NULL;
     pass = getpwuid(getuid());
@@ -47,10 +39,6 @@ char *get_username() {
     return pass->pw_name;
 }
 
-/**
- * Get the hostname of the machine.
- * @return Returns the hostname.
- */
 char *get_hostname() {
     char hostname[HOST_NAME_MAX + 1];
     gethostname(hostname, HOST_NAME_MAX + 1);
@@ -63,10 +51,6 @@ char *get_hostname() {
     return result;
 }
 
-/**
- * Get the current working directory of the shell.
- * @return Returns the current working directory.
- */
 char *get_working_directory() {
     char *cwd = malloc(PATH_MAX * sizeof(char *));
     getcwd(cwd, PATH_MAX);
@@ -77,9 +61,6 @@ char *get_working_directory() {
     return cwd;
 }
 
-/**
- * Print the console line before the user input.
- */
 void print_input_line() {
     char *username = get_username();
     char *hostname = get_hostname();
@@ -95,10 +76,6 @@ void print_input_line() {
     }
 }
 
-/**
- * Get input from the console.
- * @return Returns a string input by the user.
- */
 char *get_console_input() {
     size_t buffer_size = 0;
     char *line = NULL;

@@ -20,10 +20,6 @@
 #include <unistd.h>
 #include "array.h"
 
-/**
- * Launch programs from the OS.
- * @param args The arguments to launch.
- */
 void launch_program(StringArray *args) {
     pid_t child = 0;
 
