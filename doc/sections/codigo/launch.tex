@@ -1,0 +1,6 @@
+\newpage
+\subsection{Launch}
+Launch(lanzar) es la parte responsable por permutar un programa que está en el sistema operativo o en PATH. Para hacer eso\
+primer hacemos un fork donde el hijo permuta la operación y el padre espera que su hijo termina. Luego pasamos un nombre\
+de programa a lanzar y sus argumentos al execvp para permutar en el hijo.
+\lstinputlisting{code/launch.txt}
