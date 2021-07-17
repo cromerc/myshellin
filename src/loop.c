@@ -22,8 +22,6 @@
 #include "console_line.h"
 #include "launch.h"
 
-static CleanArray clean;
-
 /**
  * Add memory address to array to be cleaned up later.
  * @param data The data to be cleaned up on exit.
@@ -51,6 +49,7 @@ void exit_cleanup() {
         free(clean.array);
         clean.array = NULL;
     }
+    free_array_list(variables);
 }
 
 /**
@@ -58,7 +57,10 @@ void exit_cleanup() {
  */
 void loop() {
     clean.size = 0;
+    variables = create_array_list();
     atexit(exit_cleanup);
+    set_array_list(variables, "PWD", get_working_directory());
+
     while (1) {
         print_input_line();
 

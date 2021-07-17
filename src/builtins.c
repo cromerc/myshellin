@@ -84,5 +84,8 @@ void change_directory(StringArray *args) {
         if (chdir(args->array[1]) != 0) {
             perror("cd");
         }
+        else {
+            set_array_list(variables, "PWD", get_working_directory());
+        }
     }
 }

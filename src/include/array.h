@@ -27,6 +27,15 @@ typedef struct {
     size_t size;
 } CleanArray;
 
+typedef struct {
+    StringArray *keys;
+    StringArray *values;
+    size_t size;
+} ArrayList;
+
+CleanArray clean;
+ArrayList *variables;
+
 StringArray *create_string_array();
 
 void insert_string_array(StringArray *string_array, char *string);
@@ -34,4 +43,14 @@ void insert_string_array(StringArray *string_array, char *string);
 void delete_string_array(StringArray *string_array, int index);
 
 void free_string_array(StringArray *string_array);
+
+ArrayList *create_array_list();
+
+void set_array_list(ArrayList *array_list, char *key, char *value);
+
+char *get_array_list(ArrayList *array_list, char *key);
+
+void unset_array_list(ArrayList *array_list, char *key);
+
+void free_array_list(ArrayList *array_list);
 #endif

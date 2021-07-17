@@ -38,7 +38,7 @@ StringArray *create_string_array() {
  * @param string The string to insert into the String Array.
  */
 void insert_string_array(StringArray *string_array, char *string) {
-    if (string_array->size == 0) {
+    if (string_array->array == NULL) {
         string_array->array = malloc(2 * sizeof(char *));
         if (string_array->array == NULL) {
             perror("malloc");
@@ -54,7 +54,7 @@ void insert_string_array(StringArray *string_array, char *string) {
             exit(EXIT_FAILURE);
         }
     }
-    string_array->array[string_array->size] = malloc(sizeof(string));
+    string_array->array[string_array->size] = malloc(strlen(string) * sizeof(char *));
     if (string_array->array == NULL) {
         perror("malloc");
         free_string_array(string_array);
@@ -76,7 +76,7 @@ void delete_string_array(StringArray *string_array, int index) {
         for (size_t i = index; i < string_array->size - 1; i++) {
             free(string_array->array[i]);
             string_array->array[i] = NULL;
-            string_array->array[i] = malloc(sizeof(string_array->array[i + 1]));
+            string_array->array[i] = malloc(strlen(string_array->array[i + 1]) * sizeof(char *));
             if (string_array->array[i] == NULL) {
                 perror("malloc");
                 exit(EXIT_FAILURE);
@@ -119,5 +119,96 @@ void free_string_array(StringArray *string_array) {
     if (string_array != NULL) {
         free(string_array);
         string_array = NULL;
+    }
+}
+
+/**
+ * Create a new Array List.
+ * @return Returns the newly created Array List.
+ */
+ArrayList *create_array_list() {
+    ArrayList *array_list = malloc(sizeof(ArrayList));
+    if (array_list == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    array_list->keys = NULL;
+    array_list->values = NULL;
+    array_list->size = 0;
+    return array_list;
+}
+
+/**
+ * Set a key inside the Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to insert/update.
+ * @param value The value to insert/update.
+ */
+void set_array_list(ArrayList *array_list, char *key, char *value) {
+    if (array_list->keys == NULL) {
+        array_list->keys = create_string_array();
+        array_list->values = create_string_array();
+    }
+    for (size_t i = 0; i < array_list->size; i++) {
+        if (strcmp(array_list->keys->array[i], key) == 0) {
+            array_list->values->array[i] = realloc(array_list->values->array[i], strlen(value) * sizeof(char *));
+            strcpy(array_list->values->array[i], value);
+            if (array_list->values->array[i] == NULL) {
+                perror("realloc");
+                exit(EXIT_FAILURE);
+            }
+            return;
+        }
+    }
+    insert_string_array(array_list->keys, key);
+    insert_string_array(array_list->values, value);
+    array_list->size++;
+}
+
+/**
+ * Get a value based on a key from an Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to search for.
+ * @return Returns the value if the key is found in the Array List otherwise it returns NULL.
+ */
+char *get_array_list(ArrayList *array_list, char *key) {
+    if (array_list->keys != NULL) {
+        for (size_t i = 0; i < array_list->size; i++) {
+            if (strcmp(array_list->keys->array[i], key) == 0) {
+                return array_list->values->array[i];
+            }
+        }
+    }
+    return NULL;
+}
+
+/**
+ * Remove a key from the Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to remove.
+ */
+void unset_array_list(ArrayList *array_list, char *key) {
+    if (array_list->keys != NULL) {
+        for (size_t i = 0; i < array_list->size; i++) {
+            if (strcmp(array_list->keys->array[i], key) == 0) {
+                delete_string_array(array_list->keys, i);
+                delete_string_array(array_list->values, i);
+                array_list->size--;
+                return;
+            }
+        }
+    }
+}
+
+/**
+ * Free all the memory used in the Array List.
+ * @param array_list The Array List to free.
+ */
+void free_array_list(ArrayList *array_list) {
+    if (array_list != NULL) {
+        free_string_array(array_list->keys);
+        free_string_array(array_list->values);
+        free(array_list);
+        array_list = NULL;
     }
 }

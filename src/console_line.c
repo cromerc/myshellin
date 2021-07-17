@@ -21,6 +21,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "array.h"
 #include "color.h"
 #include "console_line.h"
 
@@ -37,7 +38,7 @@ void remove_new_line(char* line) {
  * @return Returns the logged in user's username.
  */
 char *get_username() {
-    struct passwd *pass;
+    struct passwd *pass = NULL;
     pass = getpwuid(getuid());
     if (pass == NULL) {
         perror("getpwuid");
@@ -67,8 +68,8 @@ char *get_hostname() {
  * @return Returns the current working directory.
  */
 char *get_working_directory() {
-    char *cwd = NULL;
-    cwd = getcwd(NULL, PATH_MAX);
+    char *cwd = malloc(PATH_MAX * sizeof(char *));
+    getcwd(cwd, PATH_MAX);
     if (cwd == NULL) {
         perror("getcwd");
         exit(EXIT_FAILURE);
