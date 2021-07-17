@@ -49,7 +49,9 @@ void loop() {
     clean.size = 0;
     variables = create_array_list();
     atexit(exit_cleanup);
-    set_array_list(variables, "PWD", get_working_directory());
+    char *cwd = get_working_directory();
+    set_array_list(variables, "PWD", cwd);
+    free(cwd);
 
     while (1) {
         print_input_line();
