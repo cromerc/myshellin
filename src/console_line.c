@@ -24,10 +24,7 @@
 #include "array.h"
 #include "color.h"
 #include "console_line.h"
-
-void remove_new_line(char* line) {
-    line[strcspn(line, "\n")] = 0;
-}
+#include "utils.h"
 
 char *get_username() {
     struct passwd *pass = NULL;
@@ -49,16 +46,6 @@ char *get_hostname() {
     }
     strcpy(result, hostname);
     return result;
-}
-
-char *get_working_directory() {
-    char *cwd = malloc(PATH_MAX * sizeof(char *));
-    getcwd(cwd, PATH_MAX);
-    if (cwd == NULL) {
-        perror("getcwd");
-        exit(EXIT_FAILURE);
-    }
-    return cwd;
 }
 
 void print_input_line() {

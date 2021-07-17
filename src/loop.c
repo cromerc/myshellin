@@ -21,6 +21,7 @@
 #include "builtins.h"
 #include "console_line.h"
 #include "launch.h"
+#include "utils.h"
 
 void add_to_cleanup(void *data) {
     clean.array = realloc(clean.array, (clean.size + 1) * sizeof(void *));

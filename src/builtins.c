@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include "array.h"
 #include "builtins.h"
-#include "console_line.h"
+#include "utils.h"
 
 bool is_builtin(char *command) {
     if (strcmp(command, "exit") == 0) {

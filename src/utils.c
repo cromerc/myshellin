@@ -13,30 +13,23 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _MYSHELLIN_CONSOLE_LINE
-#define _MYSHELLIN_CONSOLE_LINE
+#define _GNU_SOURCE
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-/**
- * Get the logged in user's username.
- * @return Returns the logged in user's username.
- */
-char *get_username();
+void remove_new_line(char* line) {
+    line[strcspn(line, "\n")] = 0;
+}
 
-/**
- * Get the hostname of the machine.
- * @return Returns the hostname.
- */
-char *get_hostname();
-
-/**
- * Print the console line before the user input.
- */
-void print_input_line();
-
-/**
- * Get input from the console.
- * @return Returns a string input by the user.
- */
-char *get_console_input();
-
-#endif
+char *get_working_directory() {
+    char *cwd = malloc(PATH_MAX * sizeof(char *));
+    getcwd(cwd, PATH_MAX);
+    if (cwd == NULL) {
+        perror("getcwd");
+        exit(EXIT_FAILURE);
+    }
+    return cwd;
+}
