@@ -16,8 +16,6 @@
 #ifndef _MYSHELLIN_CONSOLE_LINE
 #define _MYSHELLIN_CONSOLE_LINE
 
-#define CONSOLE_BUFFER_SIZE 1024
-
 /**
  * Remove new line from the end of a string.
  * @param line The string to remove the new line from.
