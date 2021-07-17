@@ -48,6 +48,12 @@ void change_directory(StringArray *args);
  * Print all of the environment variables.
  * @param args The arguments the user input.
  */
-void print_environ(StringArray * args);
+void print_environ(StringArray *args);
+
+/**
+ * Set an environment variable.
+ * @param args The arguments passed to set.
+ */
+void set_variable(StringArray *args);
 
 #endif
