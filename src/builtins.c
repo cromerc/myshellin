@@ -235,9 +235,6 @@ void echo(StringArray *args) {
     }
 
     for (size_t i = 0; i < no_variables->size; i++) {
-        if (i == 0) {
-            fprintf(stderr, "\n");
-        }
         fprintf(stderr, "The variable %s doesn't exist!\n", no_variables->array[i]);
     }
     free_string_array(no_variables);
