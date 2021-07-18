@@ -19,6 +19,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "array.h"
+#include "utils.h"
 
 void launch_program(StringArray *args) {
     pid_t child = 0;
@@ -26,9 +27,31 @@ void launch_program(StringArray *args) {
     child = fork();
 
     if (child == 0) {
-        if (execvp(args->array[0], args->array) == -1) {
-            fprintf(stderr, "%s: command not found\n", args->array[0]);
+        StringArray *new_args = create_string_array();
+        insert_string_array(new_args, args->array[0]);
+        for (size_t i = 1; i < args->size; i++) {
+            if (args->array[i][0] == '$') {
+                char *variable = remove_variable_symbol(args->array[i]);
+
+                char *value = get_array_list(variables, variable);
+                if (value != NULL) {
+                    insert_string_array(new_args, value);
+                }
+
+                if (variable != NULL) {
+                    free(variable);
+                    variable = NULL;
+                }
+            }
+            else {
+                insert_string_array(new_args, args->array[i]);
+            }
+        }
+
+        if (execvp(new_args->array[0], new_args->array) == -1) {
+            fprintf(stderr, "%s: command not found\n", new_args->array[0]);
             free_string_array(args);
+            free_string_array(new_args);
             exit(EXIT_FAILURE);
         }
     }
