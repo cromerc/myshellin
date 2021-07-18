@@ -62,4 +62,11 @@ void set_variable(StringArray *args);
  */
 void echo(StringArray *args);
 
+/**
+ * Remove the $ symbol from a variable name.
+ * @param original_variable The original variable name.
+ * @return Returns the string without the $ symbool.
+ */
+char *remove_variable_symbol(char *original_variable);
+
 #endif

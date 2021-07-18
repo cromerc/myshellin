@@ -126,17 +126,7 @@ void set_variable(StringArray *args) {
         return;
     }
 
-    char *variable = malloc((strlen(args->array[1])) * sizeof(char *));
-    if (variable == NULL) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    memset(variable, 0, strlen(args->array[1]));
-
-    // Remove the $ symbol from the string
-    for (size_t i = 0; i < strlen(args->array[1]); i++) {
-        variable[i] = args->array[1][i + 1];
-    }
+    char *variable = remove_variable_symbol(args->array[1]);
 
     // Check variable name for invalid characters
     for (size_t i = 0; i < strlen(variable); i++) {
@@ -196,17 +186,7 @@ void echo(StringArray *args) {
 
     for (size_t i = 1; i < args->size; i++) {
         if (args->array[i][0] == '$') {
-            char *variable = malloc((strlen(args->array[i])) * sizeof(char *));
-            if (variable == NULL) {
-                perror("malloc");
-                exit(EXIT_FAILURE);
-            }
-            memset(variable, 0, strlen(args->array[i]));
-
-            // Remove the $ symbol
-            for (size_t j = 0; j < strlen(args->array[i]); j++) {
-                variable[j] = args->array[i][j + 1];
-            }
+            char *variable = remove_variable_symbol(args->array[i]);
 
             char *value = get_array_list(variables, variable);
             if (value == NULL) {
@@ -238,4 +218,18 @@ void echo(StringArray *args) {
         fprintf(stderr, "The variable %s doesn't exist!\n", no_variables->array[i]);
     }
     free_string_array(no_variables);
+}
+
+char *remove_variable_symbol(char *original_variable) {
+    char *variable = malloc((strlen(original_variable)) * sizeof(char *));
+    if (variable == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    memset(variable, 0, strlen(original_variable));
+
+    for (size_t i = 0; i < strlen(original_variable); i++) {
+        variable[i] = original_variable[i + 1];
+    }
+    return variable;
 }
