@@ -78,16 +78,49 @@ void change_directory(StringArray *args) {
         return;
     }
     else if (args->size == 1) {
-        char *cwd = get_working_directory();
-        fprintf(stdout, "%s\n", cwd);
-        if (cwd != NULL) {
-            free(cwd);
-            cwd = NULL;
-        }
+        print_current_directory();
     }
     else {
-        if (chdir(args->array[1]) != 0) {
-            fprintf(stderr, "cd: %s \"%s\"\n", strerror(errno), args->array[1]);
+        char *value = NULL;
+        if (args->array[1][0] == '$') {
+            char *variable = remove_variable_symbol(args->array[1]);
+
+            char *array_value = get_array_list(variables, variable);
+
+            if (array_value == NULL) {
+                if (variable != NULL) {
+                    free(variable);
+                    variable = NULL;
+                }
+                print_current_directory();
+                return;
+            }
+
+            value = malloc((strlen(array_value) + 1) * sizeof(char *));
+            if (value == NULL) {
+                perror("malloc");
+                exit(EXIT_FAILURE);
+            }
+            memset(value, 0, strlen(array_value) + 1);
+            strcpy(value, array_value);
+
+            if (variable != NULL) {
+                free(variable);
+                variable = NULL;
+            }
+        }
+        else {
+            value = malloc((strlen(args->array[1]) + 1) * sizeof(char *));
+            if (value == NULL) {
+                perror("malloc");
+                exit(EXIT_FAILURE);
+            }
+            memset(value, 0, strlen(args->array[1]) + 1);
+            strcpy(value, args->array[1]);
+        }
+
+        if (chdir(value) != 0) {
+            fprintf(stderr, "cd: %s \"%s\"\n", strerror(errno), value);
         }
         else {
             char *cwd = get_working_directory();
@@ -97,6 +130,20 @@ void change_directory(StringArray *args) {
                 cwd = NULL;
             }
         }
+
+        if (value != NULL) {
+            free(value);
+            value = NULL;
+        }
+    }
+}
+
+void print_current_directory() {
+    char *cwd = get_working_directory();
+    fprintf(stdout, "%s\n", cwd);
+    if (cwd != NULL) {
+        free(cwd);
+        cwd = NULL;
     }
 }
 
