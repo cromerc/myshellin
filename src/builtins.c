@@ -218,6 +218,10 @@ void echo(StringArray *args) {
                 }
                 fprintf(stdout, "%s", value);
             }
+            if (variable != NULL) {
+                free(variable);
+                variable = NULL;
+            }
         }
         else {
             if (i != 1) {
@@ -236,4 +240,5 @@ void echo(StringArray *args) {
         }
         fprintf(stderr, "The variable %s doesn't exist!\n", no_variables->array[i]);
     }
+    free_string_array(no_variables);
 }
