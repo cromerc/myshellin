@@ -219,17 +219,3 @@ void echo(StringArray *args) {
     }
     free_string_array(no_variables);
 }
-
-char *remove_variable_symbol(char *original_variable) {
-    char *variable = malloc((strlen(original_variable)) * sizeof(char *));
-    if (variable == NULL) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    memset(variable, 0, strlen(original_variable));
-
-    for (size_t i = 0; i < strlen(original_variable); i++) {
-        variable[i] = original_variable[i + 1];
-    }
-    return variable;
-}

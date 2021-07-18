@@ -27,4 +27,12 @@ void remove_new_line(char *line);
  * @return Returns the current working directory.
  */
 char *get_working_directory();
+
+/**
+ * Remove the $ symbol from a variable name.
+ * @param original_variable The original variable name.
+ * @return Returns the string without the $ symbool.
+ */
+char *remove_variable_symbol(char *original_variable);
+
 #endif
