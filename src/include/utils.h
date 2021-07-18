@@ -13,53 +13,26 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include "array.h"
-#include "utils.h"
+#ifndef _MYSHELLIN_UTILS
+#define _MYSHELLIN_UTILS
 
-void launch_program(StringArray *args) {
-    pid_t child = 0;
+/**
+ * Remove new line from the end of a string.
+ * @param line The string to remove the new line from.
+ */
+void remove_new_line(char *line);
 
-    child = fork();
+/**
+ * Get the current working directory of the shell.
+ * @return Returns the current working directory.
+ */
+char *get_working_directory();
 
-    if (child == 0) {
-        StringArray *new_args = create_string_array();
-        insert_string_array(new_args, args->array[0]);
-        for (size_t i = 1; i < args->size; i++) {
-            if (args->array[i][0] == '$') {
-                char *variable = remove_variable_symbol(args->array[i]);
+/**
+ * Remove the $ symbol from a variable name.
+ * @param original_variable The original variable name.
+ * @return Returns the string without the $ symbool.
+ */
+char *remove_variable_symbol(char *original_variable);
 
-                char *value = get_array_list(variables, variable);
-                if (value != NULL) {
-                    insert_string_array(new_args, value);
-                }
-
-                if (variable != NULL) {
-                    free(variable);
-                    variable = NULL;
-                }
-            }
-            else {
-                insert_string_array(new_args, args->array[i]);
-            }
-        }
-
-        if (execvp(new_args->array[0], new_args->array) == -1) {
-            fprintf(stderr, "%s: command not found\n", new_args->array[0]);
-            free_string_array(args);
-            free_string_array(new_args);
-            exit(EXIT_FAILURE);
-        }
-    }
-    else if (child < 0) {
-        perror("fork");
-    }
-    else {
-        int child_status;
-        waitpid(child, &child_status, 0);
-    }
-}
+#endif

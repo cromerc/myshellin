@@ -14,52 +14,36 @@
  */
 
 #define _GNU_SOURCE
+#include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/wait.h>
 #include <unistd.h>
-#include "array.h"
-#include "utils.h"
 
-void launch_program(StringArray *args) {
-    pid_t child = 0;
+void remove_new_line(char* line) {
+    line[strcspn(line, "\n")] = 0;
+}
 
-    child = fork();
-
-    if (child == 0) {
-        StringArray *new_args = create_string_array();
-        insert_string_array(new_args, args->array[0]);
-        for (size_t i = 1; i < args->size; i++) {
-            if (args->array[i][0] == '$') {
-                char *variable = remove_variable_symbol(args->array[i]);
-
-                char *value = get_array_list(variables, variable);
-                if (value != NULL) {
-                    insert_string_array(new_args, value);
-                }
-
-                if (variable != NULL) {
-                    free(variable);
-                    variable = NULL;
-                }
-            }
-            else {
-                insert_string_array(new_args, args->array[i]);
-            }
-        }
-
-        if (execvp(new_args->array[0], new_args->array) == -1) {
-            fprintf(stderr, "%s: command not found\n", new_args->array[0]);
-            free_string_array(args);
-            free_string_array(new_args);
-            exit(EXIT_FAILURE);
-        }
+char *get_working_directory() {
+    char *cwd = malloc(PATH_MAX * sizeof(char *));
+    getcwd(cwd, PATH_MAX);
+    if (cwd == NULL) {
+        perror("getcwd");
+        exit(EXIT_FAILURE);
     }
-    else if (child < 0) {
-        perror("fork");
+    return cwd;
+}
+
+char *remove_variable_symbol(char *original_variable) {
+    char *variable = malloc((strlen(original_variable)) * sizeof(char *));
+    if (variable == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
     }
-    else {
-        int child_status;
-        waitpid(child, &child_status, 0);
+    memset(variable, 0, strlen(original_variable));
+
+    for (size_t i = 0; i < strlen(original_variable); i++) {
+        variable[i] = original_variable[i + 1];
     }
+    return variable;
 }

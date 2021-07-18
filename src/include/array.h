@@ -17,16 +17,126 @@
 
 #ifndef _MYSHELLIN_ARRAY
 #define _MYSHELLIN_ARRAY
+
+/**
+ * This struct houses a dynamically sized string array.
+ */
 typedef struct {
+    /**
+     * The array.
+     */
     char **array;
+
+    /**
+     * The amount of elements in the array.
+     */
     size_t size;
 } StringArray;
 
-void create_string_array(StringArray *string_array);
+/**
+ * This struct is used to clean up memory on exit.
+ */
+typedef struct {
+    /**
+     * The array of memory to clean.
+     */
+    void **array;
 
+    /**
+     * The amount of elements in the array.
+     */
+    size_t size;
+} CleanArray;
+
+/**
+ * This struct has an array list with key value pairs based on strings.
+ */
+typedef struct {
+    /**
+     * The keys array.
+     */
+    StringArray *keys;
+
+    /**
+     * The values array.
+     */
+    StringArray *values;
+
+    /**
+     * The amount of elements in the array list.
+     */
+    size_t size;
+} ArrayList;
+
+/**
+ * A global clean array to use on exit.
+ */
+CleanArray clean;
+
+/**
+ * A global variables array used for environment variables and values.
+ */
+ArrayList *variables;
+
+/**
+ * Create a String Array by initializing its structure.
+ * @return Returns a new String Array.
+ */
+StringArray *create_string_array();
+
+/**
+ * Insert a string into the String Array.
+ * @param string_array The String Array to insert into.
+ * @param string The string to insert into the String Array.
+ */
 void insert_string_array(StringArray *string_array, char *string);
 
+/**
+ * Delete a string from the String Array.
+ * @param string_array The String Array to delete from.
+ * @param index The index in the String Array to delete.
+ */
 void delete_string_array(StringArray *string_array, int index);
 
+/**
+ * Free the String Array and all of its strings.
+ * @param string_array The String Array to free.
+ */
 void free_string_array(StringArray *string_array);
+
+/**
+ * Create a new Array List.
+ * @return Returns the newly created Array List.
+ */
+ArrayList *create_array_list();
+
+/**
+ * Set a key inside the Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to insert/update.
+ * @param value The value to insert/update.
+ */
+void set_array_list(ArrayList *array_list, char *key, char *value);
+
+/**
+ * Get a value based on a key from an Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to search for.
+ * @return Returns the value if the key is found in the Array List otherwise it returns NULL.
+ */
+char *get_array_list(ArrayList *array_list, char *key);
+
+/**
+ * Remove a key from the Array List.
+ * @param array_list The Array List to work on.
+ * @param key The key to remove.
+ */
+void unset_array_list(ArrayList *array_list, char *key);
+
+/**
+ * Free all the memory used in the Array List.
+ * @param array_list The Array List to free.
+ */
+void free_array_list(ArrayList *array_list);
+
 #endif

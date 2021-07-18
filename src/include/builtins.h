@@ -18,11 +18,53 @@
 
 #ifndef _MYSHELLIN_BUILTINS
 #define _MYSHELLIN_BUILTINS
+
+/**
+ * Check if the command is a builtin or not.
+ * @param command String with the command name to check.
+ * @return Returns true if it's a builtin or false otherwise.
+ */
 bool is_builtin(char *command);
 
+/**
+ * Run the builtin command.
+ * @param args An array of strings containing the arguments to run.
+ */
 void run_builtin(StringArray *args);
 
+/**
+ * Exit the shell.
+ * @param args The arguments that were used to call exit. This is used to free the memory before exit.
+ */
 void exit_shell(StringArray *args);
 
+/**
+ * Change the directory to what the user inputs.
+ * @param args The arguments the user input.
+ */
 void change_directory(StringArray *args);
+
+/**
+ * Print the current working directory.
+ */
+void print_current_directory();
+
+/**
+ * Print all of the environment variables.
+ * @param args The arguments the user input.
+ */
+void print_environ(StringArray *args);
+
+/**
+ * Set an environment variable.
+ * @param args The arguments passed to set.
+ */
+void set_variable(StringArray *args);
+
+/**
+ * Print a message or variable.
+ * @param args The arguments passed to echo.
+ */
+void echo(StringArray *args);
+
 #endif

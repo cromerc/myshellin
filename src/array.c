@@ -17,55 +17,52 @@
 #include <string.h>
 #include "array.h"
 
-/**
- * Create a String Array by initializing its structure.
- * @param string_array The String Array to create.
- */
-void create_string_array(StringArray *string_array) {
+StringArray *create_string_array() {
+    StringArray *string_array = malloc(sizeof(StringArray));
+    if (string_array == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
     string_array->array = NULL;
     string_array->size = 0;
+    return string_array;
 }
 
-/**
- * Insert a string into the String Array.
- * @param string_array The String Array to insert into.
- * @param string The string to insert into the String Array.
- */
 void insert_string_array(StringArray *string_array, char *string) {
-    if (string_array->size == 0) {
-        string_array->array = malloc(sizeof(char *));
+    if (string_array->array == NULL) {
+        string_array->array = malloc(2 * sizeof(char *));
         if (string_array->array == NULL) {
             perror("malloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
     }
     else {
-        string_array->array = realloc(string_array->array, (string_array->size + 1) * sizeof(char *));
+        string_array->array = realloc(string_array->array, (string_array->size + 2) * sizeof(char *));
         if (string_array->array == NULL) {
             perror("realloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
     }
-    string_array->array[string_array->size] = malloc(sizeof(string));
+    string_array->array[string_array->size] = malloc(strlen(string) * sizeof(char *));
     if (string_array->array == NULL) {
         perror("malloc");
+        free_string_array(string_array);
         exit(EXIT_FAILURE);
     }
     strcpy(string_array->array[string_array->size], string);
+    // A NULL terminated array
+    string_array->array[string_array->size + 1] = NULL;
     string_array->size++;
 }
 
-/**
- * Delete a string from the String Array.
- * @param string_array The String Array to delete from.
- * @param index The index in the String Array to delete.
- */
 void delete_string_array(StringArray *string_array, int index) {
     if (string_array->array != NULL && string_array->size > 0 && string_array->size > index) {
-        for (int i = index; i < string_array->size - 1; i++) {
+        for (size_t i = index; i < string_array->size - 1; i++) {
             free(string_array->array[i]);
             string_array->array[i] = NULL;
-            string_array->array[i] = malloc(sizeof(string_array->array[i + 1]));
+            string_array->array[i] = malloc(strlen(string_array->array[i + 1]) * sizeof(char *));
             if (string_array->array[i] == NULL) {
                 perror("malloc");
                 exit(EXIT_FAILURE);
@@ -74,9 +71,10 @@ void delete_string_array(StringArray *string_array, int index) {
         }
         free(string_array->array[string_array->size - 1]);
         string_array->array[string_array->size - 1] = NULL;
-        string_array->array = realloc(string_array->array, (string_array->size - 1) * sizeof(char *));
+        string_array->array = realloc(string_array->array, (string_array->size) * sizeof(char *));
         if (string_array->array == NULL) {
             perror("realloc");
+            free_string_array(string_array);
             exit(EXIT_FAILURE);
         }
         string_array->size--;
@@ -88,27 +86,86 @@ void delete_string_array(StringArray *string_array, int index) {
     }
 }
 
-/**
- * Free the String Array and all of its strings.
- * @param string_array The String Array to free.
- */
 void free_string_array(StringArray *string_array) {
-    if (string_array->array == NULL) {
-        fprintf(stderr, "StringArray is not freeable!\n");
-        free_string_array(string_array);
+    for (size_t i = 0; i < string_array->size; i++) {
+        if (string_array->array[i] != NULL) {
+            free(string_array->array[i]);
+            string_array->array[i] = NULL;
+        }
+    }
+    if (string_array->array != NULL) {
+        free(string_array->array);
+        string_array->array = NULL;
+    }
+    string_array->size = 0;
+    if (string_array != NULL) {
+        free(string_array);
+        string_array = NULL;
+    }
+}
+
+ArrayList *create_array_list() {
+    ArrayList *array_list = malloc(sizeof(ArrayList));
+    if (array_list == NULL) {
+        perror("malloc");
         exit(EXIT_FAILURE);
     }
-    else {
-        for (int i = 0; i < string_array->size; i++) {
-            if (string_array->array[i] != NULL) {
-                free(string_array->array[i]);
-                string_array->array[i] = NULL;
+    array_list->keys = NULL;
+    array_list->values = NULL;
+    array_list->size = 0;
+    return array_list;
+}
+
+void set_array_list(ArrayList *array_list, char *key, char *value) {
+    if (array_list->keys == NULL) {
+        array_list->keys = create_string_array();
+        array_list->values = create_string_array();
+    }
+    for (size_t i = 0; i < array_list->size; i++) {
+        if (strcmp(array_list->keys->array[i], key) == 0) {
+            array_list->values->array[i] = realloc(array_list->values->array[i], strlen(value) * sizeof(char *));
+            strcpy(array_list->values->array[i], value);
+            if (array_list->values->array[i] == NULL) {
+                perror("realloc");
+                exit(EXIT_FAILURE);
+            }
+            return;
+        }
+    }
+    insert_string_array(array_list->keys, key);
+    insert_string_array(array_list->values, value);
+    array_list->size++;
+}
+
+char *get_array_list(ArrayList *array_list, char *key) {
+    if (array_list->keys != NULL) {
+        for (size_t i = 0; i < array_list->size; i++) {
+            if (strcmp(array_list->keys->array[i], key) == 0) {
+                return array_list->values->array[i];
             }
         }
-        if (string_array->array != NULL) {
-            free(string_array->array);
-            string_array->array = NULL;
+    }
+    return NULL;
+}
+
+void unset_array_list(ArrayList *array_list, char *key) {
+    if (array_list->keys != NULL) {
+        for (size_t i = 0; i < array_list->size; i++) {
+            if (strcmp(array_list->keys->array[i], key) == 0) {
+                delete_string_array(array_list->keys, i);
+                delete_string_array(array_list->values, i);
+                array_list->size--;
+                return;
+            }
         }
-        string_array->size = 0;
+    }
+}
+
+void free_array_list(ArrayList *array_list) {
+    if (array_list != NULL) {
+        free_string_array(array_list->keys);
+        free_string_array(array_list->values);
+        free(array_list);
+        array_list = NULL;
     }
 }

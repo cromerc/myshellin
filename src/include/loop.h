@@ -15,5 +15,21 @@
 
 #ifndef _MYSHELLIN_LOOP
 #define _MYSHELLIN_LOOP
+
+/**
+ * Add memory address to array to be cleaned up later.
+ * @param data The data to be cleaned up on exit.
+ */
+void add_to_cleanup(void *data);
+
+/**
+ * Cleanup memory when exiting.
+ */
+void exit_cleanup();
+
+/**
+ * This is the loop that checks for user input and acts on it.
+ */
 void loop();
+
 #endif

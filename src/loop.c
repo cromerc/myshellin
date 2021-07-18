@@ -21,23 +21,53 @@
 #include "builtins.h"
 #include "console_line.h"
 #include "launch.h"
+#include "utils.h"
 
-/**
- * This is the loop that checks for user input and acts on it.
- */
+void add_to_cleanup(void *data) {
+    clean.array = realloc(clean.array, (clean.size + 1) * sizeof(void *));
+    if (clean.array == NULL) {
+        perror("realloc");
+        exit(EXIT_FAILURE);
+    }
+    clean.array[clean.size++] = data;
+}
+
+void exit_cleanup() {
+    for (size_t i = 0; i < clean.size; i++) {
+        if (clean.array[i] != NULL) {
+            free(clean.array[i]);
+            clean.array[i] = NULL;
+        }
+    }
+    if (clean.array != NULL) {
+        free(clean.array);
+        clean.array = NULL;
+    }
+    free_array_list(variables);
+}
+
 void loop() {
+    clean.size = 0;
+    variables = create_array_list();
+    atexit(exit_cleanup);
+    char *cwd = get_working_directory();
+    set_array_list(variables, "PWD", cwd);
+    if (cwd != NULL) {
+        free(cwd);
+        cwd = NULL;
+    }
+
     while (1) {
         print_input_line();
 
         char *line = get_console_input();
 
-        StringArray args;
-        create_string_array(&args);
+        StringArray *args = create_string_array();
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(&args, token);
+            insert_string_array(args, token);
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -46,17 +76,18 @@ void loop() {
         }
 
         // The user didn't type anything so restart the loop
-        if (args.size == 0) {
+        if (args->size == 0) {
+            free_string_array(args);
             continue;
         }
 
-        if (is_builtin(args.array[0])) {
-            run_builtin(&args);
+        if (is_builtin(args->array[0])) {
+            run_builtin(args);
         }
         else {
-            launch_program(&args);
+            launch_program(args);
         }
 
-        free_string_array(&args);
+        free_string_array(args);
     }
 }
