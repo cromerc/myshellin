@@ -14,9 +14,12 @@
  */
 
 #define _GNU_SOURCE
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "array.h"
 #include "builtins.h"
 #include "console_line.h"
@@ -64,10 +67,28 @@ void loop() {
 
         StringArray *args = create_string_array();
 
+        char *output_file = NULL;
+        bool get_output_file = false;
+        bool output_append = false;
+
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(args, token);
+            if (get_output_file) {
+                get_output_file = false;
+                output_file = malloc((strlen(token) +1 ) * sizeof(char *));
+                strcpy(output_file, token);
+            }
+            else if (strcmp(token, ">") == 0) {
+                get_output_file = true;
+            }
+            else if (strcmp(token, ">>") == 0) {
+                get_output_file = true;
+                output_append = true;
+            }
+            else {
+                insert_string_array(args, token);
+            }
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -81,11 +102,54 @@ void loop() {
             continue;
         }
 
+        int stdout_copy = -1;
+        int fd = -1;
+
+        // redirect output to a file instead of stdout
+        if (output_file != NULL) {
+            stdout_copy = dup(1);
+            if (stdout_copy == -1) {
+                perror("dup");
+            }
+            else {
+                if (output_append) {
+                    fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0664);
+                }
+                else {
+                    fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+                }
+                if (fd == -1) {
+                    fprintf(stderr, "open: Could not open file %s: \"%s\"\n", output_file, strerror(errno));
+                    free(output_file);
+                    output_file = NULL;
+                }
+                else {
+                    if (close(1) == -1) {
+                        perror("close");
+                    }
+                    if (dup(fd) == -1) {
+                        perror("dup");
+                    }
+                }
+            }
+        }
+
         if (is_builtin(args->array[0])) {
             run_builtin(args);
         }
         else {
             launch_program(args);
+        }
+
+        if (output_file != NULL) {
+            if (close(fd) == -1) {
+                perror("close");
+            }
+            if (dup2(stdout_copy, 1) == -1) {
+                perror("dup2");
+            }
+            free(output_file);
+            output_file = NULL;
         }
 
         free_string_array(args);
