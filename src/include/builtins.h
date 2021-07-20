@@ -33,6 +33,12 @@ bool is_builtin(char *command);
 void run_builtin(StringArray *args);
 
 /**
+ * Show help message for the shell.
+ * @param args The arguments passed to help.
+ */
+void help(StringArray *args);
+
+/**
  * Exit the shell.
  * @param args The arguments that were used to call exit. This is used to free the memory before exit.
  */

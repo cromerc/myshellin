@@ -27,6 +27,10 @@ bool is_builtin(char *command) {
         return true;
     }
 
+    if (strcmp(command, "help") == 0) {
+        return true;
+    }
+
     if (strcmp(command, "cd") == 0) {
         return true;
     }
@@ -50,6 +54,9 @@ void run_builtin(StringArray *args) {
     if (strcmp(args->array[0], "exit") == 0) {
         exit_shell(args);
     }
+    else if (strcmp(args->array[0], "help") == 0) {
+        help(args);
+    }
     else if (strcmp(args->array[0], "cd") == 0) {
         change_directory(args);
     }
@@ -65,6 +72,21 @@ void run_builtin(StringArray *args) {
     else {
         fprintf(stderr, "Builtin %s does not exist!\n", args->array[0]);
     }
+}
+
+void help(StringArray *args) {
+    if (args->size > 1) {
+        fprintf(stderr, "Too many arguments!\n");
+        return;
+    }
+    fprintf(stdout, "myshellin help\n");
+    fprintf(stdout, "These command are defined internally in myshellin.\n\n");
+    fprintf(stdout, "set $<variable> = <value>                  set an environment variable\n");
+    fprintf(stdout, "environ                                    show all enviornment variables\n");
+    fprintf(stdout, "echo [$<variable> ...] [comment ...]       print comments or variables to stdout\n");
+    fprintf(stdout, "help                                       show this help message\n");
+    fprintf(stdout, "cd [dir] [$<variable>]                     change directory\n");
+    fprintf(stdout, "exit                                       exit the shell\n");
 }
 
 void exit_shell(StringArray *args) {
