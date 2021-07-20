@@ -66,41 +66,42 @@ void loop() {
 
         StringArray *args = create_string_array();
 
-        int get_file_name = 0;
+        enum FileType {FileType_none, FileType_stdout, FileType_stderr};
+        enum FileType get_file_name = FileType_none;
         Redirect out = {.fd = 1, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
         Redirect err = {.fd = 2, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            if (get_file_name == 1) {
+            if (get_file_name == FileType_stdout) {
                 // get file name for stdout redirect
                 set_filename(&out, token);
-                get_file_name = 0;
+                get_file_name = FileType_none;
             }
             else if (get_file_name == 2) {
                 // get file name for stderr redirect
                 set_filename(&err, token);
-                get_file_name = 0;
+                get_file_name = FileType_none;
             }
             else if (strcmp(token, ">") == 0 || strcmp(token, "1>") == 0) {
                 // redirect stdout and overwrite
-                get_file_name = 1;
+                get_file_name = FileType_stdout;
                 out.append = false;
             }
             else if (strcmp(token, ">>") == 0 || strcmp(token, "1>>") == 0) {
                 // redirect stdout and append
-                get_file_name = 1;
+                get_file_name = FileType_stdout;
                 out.append = true;
             }
             else if (strcmp(token, "2>") == 0) {
                 // redirect stdout and overwrite
-                get_file_name = 2;
+                get_file_name = FileType_stderr;
                 err.append = false;
             }
             else if (strcmp(token, "2>>") == 0) {
                 // redirect stdout and append
-                get_file_name = 2;
+                get_file_name = FileType_stderr;
                 err.append = true;
             }
             else {
