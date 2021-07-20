@@ -2,7 +2,7 @@ CC=clang
 CFLAGS=-Wall -Isrc/include -DDEBUG -g -std=c11
 LDFLAGS=
 FILENAME=myshellin
-SRC=src/myshellin.c src/loop.c src/console_line.c src/array.c src/builtins.c src/launch.c src/utils.c
+SRC=src/myshellin.c src/loop.c src/console_line.c src/array.c src/builtins.c src/launch.c src/utils.c src/redirect.c
 OBJ=$(SRC:.c=.o)
 
 all: myshellin

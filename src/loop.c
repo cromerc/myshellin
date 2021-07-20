@@ -14,8 +14,6 @@
  */
 
 #define _GNU_SOURCE
-#include <errno.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +22,7 @@
 #include "builtins.h"
 #include "console_line.h"
 #include "launch.h"
+#include "redirect.h"
 #include "utils.h"
 
 void add_to_cleanup(void *data) {
@@ -67,24 +66,42 @@ void loop() {
 
         StringArray *args = create_string_array();
 
-        char *output_file = NULL;
-        bool get_output_file = false;
-        bool output_append = false;
+        int get_file_name = 0;
+        Redirect out = {1, -1, -1, NULL, false};
+        Redirect err = {2, -1, -1, NULL, false};
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            if (get_output_file) {
-                get_output_file = false;
-                output_file = malloc((strlen(token) +1 ) * sizeof(char *));
-                strcpy(output_file, token);
+            if (get_file_name == 1) {
+                // get file name for stdout redirect
+                set_filename(&out, token);
+                get_file_name = 0;
             }
-            else if (strcmp(token, ">") == 0) {
-                get_output_file = true;
+            else if (get_file_name == 2) {
+                // get file name for stderr redirect
+                set_filename(&err, token);
+                get_file_name = 0;
             }
-            else if (strcmp(token, ">>") == 0) {
-                get_output_file = true;
-                output_append = true;
+            else if (strcmp(token, ">") == 0 || strcmp(token, "1>") == 0) {
+                // redirect stdout and overwrite
+                get_file_name = 1;
+                out.append = false;
+            }
+            else if (strcmp(token, ">>") == 0 || strcmp(token, "1>>") == 0) {
+                // redirect stdout and append
+                get_file_name = 1;
+                out.append = true;
+            }
+            else if (strcmp(token, "2>") == 0) {
+                // redirect stdout and overwrite
+                get_file_name = 2;
+                err.append = false;
+            }
+            else if (strcmp(token, "2>>") == 0) {
+                // redirect stdout and append
+                get_file_name = 2;
+                err.append = true;
             }
             else {
                 insert_string_array(args, token);
@@ -102,37 +119,8 @@ void loop() {
             continue;
         }
 
-        int stdout_copy = -1;
-        int fd = -1;
-
-        // redirect output to a file instead of stdout
-        if (output_file != NULL) {
-            stdout_copy = dup(1);
-            if (stdout_copy == -1) {
-                perror("dup");
-            }
-            else {
-                if (output_append) {
-                    fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0664);
-                }
-                else {
-                    fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-                }
-                if (fd == -1) {
-                    fprintf(stderr, "open: Could not open file %s: \"%s\"\n", output_file, strerror(errno));
-                    free(output_file);
-                    output_file = NULL;
-                }
-                else {
-                    if (close(1) == -1) {
-                        perror("close");
-                    }
-                    if (dup(fd) == -1) {
-                        perror("dup");
-                    }
-                }
-            }
-        }
+        open_redirect(&err);
+        open_redirect(&out);
 
         if (is_builtin(args->array[0])) {
             run_builtin(args);
@@ -141,16 +129,8 @@ void loop() {
             launch_program(args);
         }
 
-        if (output_file != NULL) {
-            if (close(fd) == -1) {
-                perror("close");
-            }
-            if (dup2(stdout_copy, 1) == -1) {
-                perror("dup2");
-            }
-            free(output_file);
-            output_file = NULL;
-        }
+        close_redirect(&out);
+        close_redirect(&err);
 
         free_string_array(args);
     }
