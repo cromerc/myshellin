@@ -67,8 +67,8 @@ void loop() {
         StringArray *args = create_string_array();
 
         int get_file_name = 0;
-        Redirect out = {1, -1, -1, NULL, false};
-        Redirect err = {2, -1, -1, NULL, false};
+        Redirect out = {.fd = 1, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
+        Redirect err = {.fd = 2, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
