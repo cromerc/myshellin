@@ -3,7 +3,6 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 
 ## Autores
 - Christopher Cromer
-- Raúl Raúl Hernandez
 
 ## Requisitos software
 - glibc
