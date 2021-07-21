@@ -22,32 +22,32 @@
 
 void open_redirect(Redirect *redirect) {
     if (redirect->filename != NULL) {
-            redirect->fd_copy = dup(redirect->fd);
-            if (redirect->fd_copy == -1) {
-                perror("dup");
+        redirect->fd_copy = dup(redirect->fd);
+        if (redirect->fd_copy == -1) {
+            perror("dup");
+        }
+        else {
+            if (redirect->append) {
+                redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
             }
             else {
-                if (redirect->append) {
-                    redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
+                redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+            }
+            if (redirect->fd_new == -1) {
+                fprintf(stderr, "open: Could not open file %s: \"%s\"\n", redirect->filename, strerror(errno));
+                free(redirect->filename);
+                redirect->filename = NULL;
+            }
+            else {
+                if (close(redirect->fd) == -1) {
+                    perror("close");
                 }
-                else {
-                    redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-                }
-                if (redirect->fd_new == -1) {
-                    fprintf(stderr, "open: Could not open file %s: \"%s\"\n", redirect->filename, strerror(errno));
-                    free(redirect->filename);
-                    redirect->filename = NULL;
-                }
-                else {
-                    if (close(redirect->fd) == -1) {
-                        perror("close");
-                    }
-                    if (dup(redirect->fd_new) == -1) {
-                        perror("dup");
-                    }
+                if (dup(redirect->fd_new) == -1) {
+                    perror("dup");
                 }
             }
         }
+    }
 }
 
 void close_redirect(Redirect *redirect) {
