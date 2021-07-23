@@ -5,13 +5,13 @@ FILENAME=myshellin
 SRC=src/myshellin.c src/loop.c src/console_line.c src/array.c src/builtins.c src/launch.c src/utils.c src/redirect.c
 OBJ=$(SRC:.c=.o)
 
-all: myshellin informe
+all: shell informe
 
-myshellin: $(OBJ)
+shell: $(OBJ)
 	$(CC) $(CFLAGS) -o $(FILENAME) $^ $(LDFLAGS)
 
-informe:
-# if pdflatex is installed create the informe
+report:
+# if pdflatex is installed create the report
 ifneq (, $(shell which pdflatex))
 	make -C doc
 	mv doc/Informe.pdf Informe.pdf
@@ -20,13 +20,13 @@ else ifneq (, $(shell which pdftex))
 	mv doc/Informe.pdf Informe.pdf
 endif
 
-clean: cleanmyshellin cleaninforme
+clean: cleanshell cleaninforme
 
-cleanmyshellin:
+cleanshell:
 	rm -f src/*.o $(FILENAME)
 
-cleaninforme:
+cleanreport:
 	make -C doc clean
 	rm -f Informe.pdf
 
-.PHONY: all myshellin informe clean cleanmyshellin cleaninforme
+.PHONY: all shell report clean cleanshell cleanreport
