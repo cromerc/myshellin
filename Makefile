@@ -5,7 +5,7 @@ FILENAME=myshellin
 SRC=src/myshellin.c src/loop.c src/console_line.c src/array.c src/builtins.c src/launch.c src/utils.c src/redirect.c
 OBJ=$(SRC:.c=.o)
 
-all: shell informe
+all: shell report
 
 shell: $(OBJ)
 	$(CC) $(CFLAGS) -o $(FILENAME) $^ $(LDFLAGS)
