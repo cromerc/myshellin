@@ -5,7 +5,7 @@ FILENAME=myshellin
 SRC=src/myshellin.c src/loop.c src/console_line.c src/array.c src/builtins.c src/launch.c src/utils.c src/redirect.c
 OBJ=$(SRC:.c=.o)
 
-all: myshellin
+all: myshellin informe
 
 myshellin: $(OBJ)
 	$(CC) $(CFLAGS) -o $(FILENAME) $^ $(LDFLAGS)
@@ -20,7 +20,7 @@ else ifneq (, $(shell which pdftex))
 	mv doc/Informe.pdf Informe.pdf
 endif
 
-clean: cleanmyshellin
+clean: cleanmyshellin cleaninforme
 
 cleanmyshellin:
 	rm -f src/*.o $(FILENAME)
