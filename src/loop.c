@@ -13,6 +13,7 @@
  */
 
 #define _GNU_SOURCE
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,43 +66,63 @@ void loop() {
 
         StringArray *args = create_string_array();
 
-        enum FileType {FileType_none, FileType_stdout, FileType_stderr};
-        enum FileType get_file_name = FileType_none;
-        Redirect out = {.fd = 1, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
-        Redirect err = {.fd = 2, .fd_new = -1, .fd_copy = -1, .filename = NULL, .append = false};
+        int get_file_name = -1;
+        Redirect in = {.fd = STDIN_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_RDONLY};
+        Redirect out = {.fd = STDOUT_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
+        Redirect err = {.fd = STDERR_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
 
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            if (get_file_name == FileType_stdout) {
+            if (get_file_name == STDIN_FILENO) {
+                // get file name for stdin redirect
+                set_filename(&in, token);
+                get_file_name = -1;
+            }
+            else if (get_file_name == STDOUT_FILENO) {
                 // get file name for stdout redirect
                 set_filename(&out, token);
-                get_file_name = FileType_none;
+                get_file_name = -1;
             }
-            else if (get_file_name == 2) {
+            else if (get_file_name == STDERR_FILENO) {
                 // get file name for stderr redirect
                 set_filename(&err, token);
-                get_file_name = FileType_none;
+                get_file_name = -1;
             }
             else if (strcmp(token, ">") == 0 || strcmp(token, "1>") == 0) {
                 // redirect stdout and overwrite
-                get_file_name = FileType_stdout;
-                out.append = false;
+                get_file_name = STDOUT_FILENO;
+                if ((out.flags & O_APPEND) == O_APPEND) {
+                    out.flags &= ~O_APPEND;
+                    out.flags |= O_TRUNC;
+                }
             }
             else if (strcmp(token, ">>") == 0 || strcmp(token, "1>>") == 0) {
                 // redirect stdout and append
-                get_file_name = FileType_stdout;
-                out.append = true;
+                get_file_name = STDOUT_FILENO;
+                if ((out.flags & O_TRUNC) == O_TRUNC) {
+                    out.flags &= ~O_TRUNC;
+                    out.flags |= O_APPEND;
+                }
             }
             else if (strcmp(token, "2>") == 0) {
-                // redirect stdout and overwrite
-                get_file_name = FileType_stderr;
-                err.append = false;
+                // redirect stderr and overwrite
+                get_file_name = STDERR_FILENO;
+                if ((err.flags & O_APPEND) == O_APPEND) {
+                    err.flags &= ~O_APPEND;
+                    err.flags |= O_TRUNC;
+                }
             }
             else if (strcmp(token, "2>>") == 0) {
-                // redirect stdout and append
-                get_file_name = FileType_stderr;
-                err.append = true;
+                // redirect stderr and append
+                get_file_name = STDERR_FILENO;
+                if ((err.flags & O_TRUNC) == O_TRUNC) {
+                    err.flags &= ~O_TRUNC;
+                    err.flags |= O_APPEND;
+                }
+            }
+            else if (strcmp(token, "<") == 0) {
+                get_file_name = STDIN_FILENO;
             }
             else {
                 insert_string_array(args, token);
@@ -121,6 +142,7 @@ void loop() {
 
         open_redirect(&err);
         open_redirect(&out);
+        open_redirect(&in);
 
         if (is_builtin(args->array[0])) {
             run_builtin(args);
@@ -129,6 +151,7 @@ void loop() {
             launch_program(args);
         }
 
+        close_redirect(&in);
         close_redirect(&out);
         close_redirect(&err);
 

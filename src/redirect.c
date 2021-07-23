@@ -27,12 +27,7 @@ void open_redirect(Redirect *redirect) {
             perror("dup");
         }
         else {
-            if (redirect->append) {
-                redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
-            }
-            else {
-                redirect->fd_new = open(redirect->filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-            }
+            redirect->fd_new = open(redirect->filename, redirect->flags, 0664);
             if (redirect->fd_new == -1) {
                 fprintf(stderr, "open: Could not open file %s: \"%s\"\n", redirect->filename, strerror(errno));
                 free(redirect->filename);
