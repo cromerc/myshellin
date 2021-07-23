@@ -1,4 +1,6 @@
-informe:
+all: report
+
+report:
 	# we do this twice to make sure the toc is updated
 	pdflatex -synctex=1 -interaction=nonstopmode "Informe.tex"
 	pdflatex -synctex=1 -interaction=nonstopmode "Informe.tex"
@@ -6,4 +8,4 @@ informe:
 clean:
 	rm -f *.log *.toc *.gz *.aux sections/*.aux *.out Informe.pdf
 
-.PHONY: informe clean
+.PHONY: all report clean

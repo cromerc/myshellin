@@ -20,7 +20,7 @@ else ifneq (, $(shell which pdftex))
 	mv doc/Informe.pdf Informe.pdf
 endif
 
-clean: cleanshell cleaninforme
+clean: cleanshell cleanreport
 
 cleanshell:
 	rm -f src/*.o $(FILENAME)
