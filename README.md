@@ -6,7 +6,7 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 
 ## Requisitos software
 - glibc
-- make 
+- make
 - clang
 
 ## Requisitos informe
@@ -16,10 +16,10 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 ## Compilar
 
 ### Software
-make myshellin
+make shell
 
 ### Informe
-make informe
+make report
 
 ## Licencia
 El proyecto es bajo la licencia "[The 3-Clause BSD License](LICENSE)".
