@@ -1,0 +1,12 @@
+\newpage
+\subsection{Redireccionamiento}
+Para redireccionar las entradas y salidas se usa 4 comandos principales, dup, dup2, open y close. El primer paso a tomar\
+es duplicar la entrada o salida(stdin, stdout o stderr) con dup. Eso es importante para restaurarlo después. Luego se abre el archivo\
+de salida o entrada usando open y los flags correspondiente a la operación que quiere\
+hacer(O\_RDONLY, O\_WRONLY, O\_CREATE, O\_APPEND o O\_TRUNC). Después, cerra stdin, stdout o stderr. Eso va a dejar su fd disponible para\
+usar. Finalmente hacer una duplicación con dup del fd de archivo de entrad o salida. Eso va a dejar el archivo usando el fd que
+cerramos anteriormente. Ahora todos las cosas mandados al stdin, stdout o stderr van a ser redirigidas al archivo. Para terminar\
+cerramos el archivo usado. Luego usamos dup2 para duplicar la copia original en su fd original. I finalmente cerramos la copia.\
+Para que funciona eso, debe abrir el redireccionamiento antes de llamar los builtins o permutar y cerrarlo después que termina\
+correr los builtins o el proceso hijo.
+\lstinputlisting{code/redirection.txt}

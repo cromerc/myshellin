@@ -1,0 +1,33 @@
+typedef struct {
+    StringArray *keys;
+    StringArray *values;
+    size_t size;
+} ArrayList;
+
+void set_array_list(ArrayList *array_list, char *key, char *value) {
+    if (array_list->keys == NULL) {
+        array_list->keys = create_string_array();
+        array_list->values = create_string_array();
+    }
+    for (size_t i = 0; i < array_list->size; i++) {
+        if (strcmp(array_list->keys->array[i], key) == 0) {
+            array_list->values->array[i] = realloc(array_list->values->array[i], strlen(value) * sizeof(char *));
+            strcpy(array_list->values->array[i], value);
+            return;
+        }
+    }
+    insert_string_array(array_list->keys, key);
+    insert_string_array(array_list->values, value);
+    array_list->size++;
+}
+
+char *get_array_list(ArrayList *array_list, char *key) {
+    if (array_list->keys != NULL) {
+        for (size_t i = 0; i < array_list->size; i++) {
+            if (strcmp(array_list->keys->array[i], key) == 0) {
+                return array_list->values->array[i];
+            }
+        }
+    }
+    return NULL;
+}

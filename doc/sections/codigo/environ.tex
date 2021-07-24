@@ -1,0 +1,8 @@
+\newpage
+\subsection{Entorno}
+El entorno está controlado por un struct de array de strings de llaves y valores. Se inserta y busca adentro de estos array de llaves\
+para encontrar y usar el variable de entorno. En el shell el struct es usado como un variable global para que se puede accederlo\
+desde cualquier parte del código que se necesita los variables de entorno. Lo mas importante son 2 funciones, set\_array\_list y\
+get\_array\_list. Se usa set\_array\_list para insertar o sobre escribir un variable de entorno. Y el get\_array\_list retorno un\
+valor si se encuentre en el array list basado en la llava pasado a la función como parámetro.
+\lstinputlisting{code/environ.txt}
