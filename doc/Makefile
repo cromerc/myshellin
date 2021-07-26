@@ -6,6 +6,11 @@ report:
 	pdflatex -synctex=1 -interaction=nonstopmode "Informe.tex"
 
 clean:
-	rm -f *.log *.toc *.gz *.aux sections/*.aux *.out Informe.pdf
+	rm -f Informe.pdf
+	find . -type f -name '*.log' -exec rm {} +
+	find . -type f -name '*.toc' -exec rm {} +
+	find . -type f -name '*.gz' -exec rm {} +
+	find . -type f -name '*.aux' -exec rm {} +
+	find . -type f -name '*.out' -exec rm {} +
 
 .PHONY: all report clean
