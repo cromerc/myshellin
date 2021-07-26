@@ -13,6 +13,9 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 - latex
 - pdflatex
 
+## Requisitos documentacón
+- doxygen
+
 ## Compilar
 
 ### Software
@@ -20,6 +23,9 @@ make shell
 
 ### Informe
 make report
+
+### Documentación
+make doc
 
 ## Licencia
 El proyecto es bajo la licencia "[The 3-Clause BSD License](LICENSE)".
