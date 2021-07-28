@@ -15,6 +15,7 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 
 ## Requisitos documentacón
 - doxygen
+- bear
 
 ## Compilar
 

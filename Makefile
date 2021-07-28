@@ -7,15 +7,37 @@ OBJ=$(SRC:.c=.o)
 
 all: shell doc report
 
-shell: $(OBJ)
+shell:
+ifneq (, $(shell which bear))
+
+ifeq (, $(wildcard ./compile_commands.json))
+	$(MAKE) shellbear
+else
+	$(MAKE) shellbuild
+endif
+
+else
+	$(MAKE) shellbuild
+endif
+
+shellbear:
+	bear make shellbuild
+
+shellbuild: $(OBJ)
 	$(CC) $(CFLAGS) -o $(FILENAME) $^ $(LDFLAGS)
 
 doc:
-# if doxygen is install create the code documentation
+# if doxygen and bear are installed create the code documentation
+ifneq (, $(shell which bear))
+ifeq (, $(wildcard ./compile_commands.json))
+	$(MAKE) cleanshell
+	$(MAKE) shellbear
+endif
 ifneq (, $(shell which doxygen))
 	doxygen doxygen.conf
 	make -C docs/latex
 	mv docs/latex/refman.pdf refman.pdf
+endif
 endif
 
 report:
@@ -31,13 +53,13 @@ endif
 clean: cleanshell cleandoc cleanreport
 
 cleanshell:
-	rm -f src/*.o $(FILENAME)
+	rm -f src/*.o $(FILENAME) compile_commands.json
 
 cleandoc:
-	rm -rf refman.pdf docs
+	rm -rf refman.pdf docs compile_commands.json
 
 cleanreport:
 	make -C report clean
 	rm -f Informe.pdf
 
-.PHONY: all shell doc report clean cleanshell cleandoc cleanreport
+.PHONY: all shell shellbear shellbuild doc report clean cleanshell cleandoc cleanreport
