@@ -1,0 +1,44 @@
+typedef struct {
+    int fd;
+    int fd_new;
+    int fd_copy;
+    char *filename;
+    int flags;
+} Redirect;
+
+Redirect in = {.fd = STDIN_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_RDONLY};
+Redirect out = {.fd = STDOUT_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
+Redirect err = {.fd = STDERR_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
+
+void open_redirect(Redirect *redirect) {
+    redirect->fd_copy = dup(redirect->fd);
+    if (redirect->fd_copy == -1) {
+        perror("dup");
+    }
+    else {
+        redirect->fd_new = open(redirect->filename, redirect->flags, 0664);
+        if (redirect->fd_new == -1) {
+            fprintf(stderr, "open: Could not open file %s: \"%s\"\n", redirect->filename, strerror(errno));
+        }
+        else {
+            if (close(redirect->fd) == -1) {
+                perror("close");
+            }
+            if (dup(redirect->fd_new) == -1) {
+                perror("dup");
+            }
+        }
+    }
+}
+
+void close_redirect(Redirect *redirect) {
+    if (close(redirect->fd_new) == -1) {
+        perror("close");
+    }
+    if (dup2(redirect->fd_copy, redirect->fd) == -1) {
+        perror("dup2");
+    }
+    if (close(redirect->fd_copy) == -1) {
+        perror("close");
+    }
+}

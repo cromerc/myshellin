@@ -6,5 +6,6 @@ myshellin
 *.gz
 *.aux
 *.out
-compile_commands.json
 .clangd
+docs
+refman.pdf

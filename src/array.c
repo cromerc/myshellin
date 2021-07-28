@@ -1,6 +1,5 @@
 /*
  * Copyright 2021 Christopher Cromer
- * Copyright 2021 Raúl Hernandez
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -14,6 +13,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "array.h"
 

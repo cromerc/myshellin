@@ -3,24 +3,29 @@ myshellin es un proyecto semestral del ramo Sistemas Operativos. El propósito d
 
 ## Autores
 - Christopher Cromer
-- Raúl Raúl Hernandez
 
 ## Requisitos software
 - glibc
-- make 
+- make
 - clang
 
 ## Requisitos informe
 - latex
 - pdflatex
 
+## Requisitos documentacón
+- doxygen
+
 ## Compilar
 
 ### Software
-make myshellin
+make shell
 
 ### Informe
-make informe
+make report
+
+### Documentación
+make doc
 
 ## Licencia
 El proyecto es bajo la licencia "[The 3-Clause BSD License](LICENSE)".

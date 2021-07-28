@@ -1,6 +1,5 @@
 /*
  * Copyright 2021 Christopher Cromer
- * Copyright 2021 Raúl Hernandez
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -14,13 +13,16 @@
  */
 
 #define _GNU_SOURCE
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "array.h"
 #include "builtins.h"
 #include "console_line.h"
 #include "launch.h"
+#include "redirect.h"
 #include "utils.h"
 
 void add_to_cleanup(void *data) {
@@ -64,10 +66,67 @@ void loop() {
 
         StringArray *args = create_string_array();
 
+        int get_file_name = -1;
+        Redirect in = {.fd = STDIN_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_RDONLY};
+        Redirect out = {.fd = STDOUT_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
+        Redirect err = {.fd = STDERR_FILENO, .fd_new = -1, .fd_copy = -1, .filename = NULL, .flags = O_WRONLY | O_CREAT | O_TRUNC};
+
         char *saveptr = NULL;
         char *token = strtok_r(line, " ", &saveptr);
         while (token) {
-            insert_string_array(args, token);
+            if (get_file_name == STDIN_FILENO) {
+                // get file name for stdin redirect
+                set_filename(&in, token);
+                get_file_name = -1;
+            }
+            else if (get_file_name == STDOUT_FILENO) {
+                // get file name for stdout redirect
+                set_filename(&out, token);
+                get_file_name = -1;
+            }
+            else if (get_file_name == STDERR_FILENO) {
+                // get file name for stderr redirect
+                set_filename(&err, token);
+                get_file_name = -1;
+            }
+            else if (strcmp(token, ">") == 0 || strcmp(token, "1>") == 0) {
+                // redirect stdout and overwrite
+                get_file_name = STDOUT_FILENO;
+                if ((out.flags & O_APPEND) == O_APPEND) {
+                    out.flags &= ~O_APPEND;
+                    out.flags |= O_TRUNC;
+                }
+            }
+            else if (strcmp(token, ">>") == 0 || strcmp(token, "1>>") == 0) {
+                // redirect stdout and append
+                get_file_name = STDOUT_FILENO;
+                if ((out.flags & O_TRUNC) == O_TRUNC) {
+                    out.flags &= ~O_TRUNC;
+                    out.flags |= O_APPEND;
+                }
+            }
+            else if (strcmp(token, "2>") == 0) {
+                // redirect stderr and overwrite
+                get_file_name = STDERR_FILENO;
+                if ((err.flags & O_APPEND) == O_APPEND) {
+                    err.flags &= ~O_APPEND;
+                    err.flags |= O_TRUNC;
+                }
+            }
+            else if (strcmp(token, "2>>") == 0) {
+                // redirect stderr and append
+                get_file_name = STDERR_FILENO;
+                if ((err.flags & O_TRUNC) == O_TRUNC) {
+                    err.flags &= ~O_TRUNC;
+                    err.flags |= O_APPEND;
+                }
+            }
+            else if (strcmp(token, "<") == 0) {
+                get_file_name = STDIN_FILENO;
+            }
+            else {
+                insert_string_array(args, token);
+            }
             token = strtok_r(NULL, " ", &saveptr);
         }
         if (line != NULL) {
@@ -81,12 +140,20 @@ void loop() {
             continue;
         }
 
+        open_redirect(&err);
+        open_redirect(&out);
+        open_redirect(&in);
+
         if (is_builtin(args->array[0])) {
             run_builtin(args);
         }
         else {
             launch_program(args);
         }
+
+        close_redirect(&in);
+        close_redirect(&out);
+        close_redirect(&err);
 
         free_string_array(args);
     }

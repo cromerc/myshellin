@@ -12,30 +12,57 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _MYSHELLIN_CONSOLE_LINE
-#define _MYSHELLIN_CONSOLE_LINE
+#ifndef _MYSHELLIN_REDIRECT
+#define _MYSHELLIN_REDIRECT
 
 /**
- * Get the logged in user's username.
- * @return Returns the logged in user's username.
+ * This structure helps for handling redirection to new fds.
  */
-char *get_username();
+typedef struct {
+    /**
+     * The fd to work with. Should be either 1 for stdout or 2 for stderr.
+     * Once set it should not be changed.
+     */
+    int fd;
+
+    /**
+     * The new fd for the file.
+     */
+    int fd_new;
+
+    /**
+     * The copy of the original fd.
+     */
+    int fd_copy;
+
+    /**
+     * The name of the file to write to.
+     */
+    char *filename;
+
+    /**
+     * Whether or not to truncate or append the file.
+     */
+    int flags;
+} Redirect;
 
 /**
- * Get the hostname of the machine.
- * @return Returns the hostname.
+ * Open an fd to handle redirect.
+ * @param redirect The redirect struct that houses the new fd and the old fd.
  */
-char *get_hostname();
+void open_redirect(Redirect *redirect);
 
 /**
- * Print the console line before the user input.
+ * Close an fd and restore the original.
+ * @param redirect The redirect struct that houses the new fd and the old fd.
  */
-void print_input_line();
+void close_redirect(Redirect *redirect);
 
 /**
- * Get input from the console.
- * @return Returns a string input by the user.
+ * Set the filename in a redirect object.
+ * @param redirect The redirect struct to set the filename to.
+ * @param filename The new filename to set.
  */
-char *get_console_input();
+void set_filename(Redirect *redirect, char *filename);
 
 #endif

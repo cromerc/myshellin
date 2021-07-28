@@ -13,6 +13,12 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{mathptmx}
+
+\newcommand{\Quad}{\hspace*{1em}}
 
 \lstdefinestyle{freefempp}{
     language=C,
@@ -29,7 +35,7 @@
 }
 
 \lstset{
-    basicstyle=\footnotesize\ttfamily,
+    basicstyle=\scriptsize\ttfamily,
     columns=flexible,
     breaklines=true,
     inputencoding=utf8,
@@ -59,8 +65,7 @@
 
 \begin{flushright}
 \textbf{Integrantes:}\\
-Christopher Cromer\\
-Raúl Hernandez
+Christopher Cromer
 \end{flushright}
 
 \begin{flushright}
@@ -80,9 +85,10 @@ Carlos Faúndez
 
 \include{sections/introduccion}
 
+\include{sections/funcionamiento}
+
 \include{sections/codigo}
 
 \include{sections/conclusiones}
 
 \end{document}
-

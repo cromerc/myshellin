@@ -1,0 +1,38 @@
+\section{Funcionamiento}
+El myshellin consiste de 3 partes importantes, los comandos "builtins", permutar y redireccionamiento.
+
+\subsection{Builtins}
+Los builtins son comandos que son proporcionados por el shell en vez de un programa que provee el sistema operativo. Los comandos\
+que proporciona el myshellin son:
+\begin{itemize}
+    \item help \newline \Quad mostrar una mensaje de ayuda de como usar el shell.
+    \item environ \newline \Quad imprimir todos los variables del entorno.
+    \item set \newline \Quad crear o sobre escribir un variable de entorno.
+    \item echo \newline \Quad imprimir un comentario o variable.
+    \item cd \newline \Quad cambiar el directorio donde está trabajando el shell.
+    \item exit \newline \Quad salir del shell.
+\end{itemize}
+
+Cuando el comando que ingreso el usuario no es un builtin el siguiente paso es tratar de permutar un software que proporciona el\
+sistema operativo.
+
+\subsection{Permutar}
+Para permutar un programa de sistema, el proceso de myshellin hace una llamada al fork para crear un proceso hijo. Luego el\
+proceso hijo intenta permutar con el comando execvp. Lo que hace eso es reemplazar el proceso hijo con el proceso del programa\
+que proporciona el sistema operativo como ls, rm, df, du, etc. Mientras que corre el programa el proceso padre espera que\
+termina el proceso hijo antes que puede seguir pidiendo que el usuario ingresa otros comandos.
+
+\newpage
+\subsection{Redireccionamiento}
+Redireccionamiento es el proceso de redirigir los contenidos de una entrada o salida al stdin, stdout o stderr. Por ejemplo\
+se puede redirigir todo el contenidos que se debe imprimir en stdout a un archivo usando el símbolo ``>`` seguido por un nombre\
+de archivo. En el shell existen los siguientes tipos de redireccionamiento:
+\begin{itemize}
+    \item > \newline \Quad redirigir el stdout a un archivo y borrar el contenido anterior si existe el archivo.
+    \item >\null> \newline \Quad redirigir el stdout a un archivo y agregue el el contenido nuevo al final del archivo si existe.
+    \item 1> \newline \Quad redirigir el stdout a un archivo y borrar el contenido anterior si existe el archivo.
+    \item 1>\null> \newline \Quad redirigir el stdout a un archivo y agregue el el contenido nuevo al final del archivo si existe.
+    \item 2> \newline \Quad redirigir el stderr a un archivo y borrar el contenido anterior si existe el archivo.
+    \item 2>\null> \newline \Quad redirigir el stderr a un archivo y agregue el el contenido nuevo al final del archivo si existe.
+    \item < \newline \Quad redirigir el contenido de un archivo al stdin.
+\end{itemize}
