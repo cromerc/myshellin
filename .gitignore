@@ -9,3 +9,4 @@ myshellin
 .clangd
 docs
 refman.pdf
+compile_commands.json
